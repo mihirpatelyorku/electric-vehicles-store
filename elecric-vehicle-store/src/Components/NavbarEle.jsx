@@ -1,34 +1,36 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-
+import { Container } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { NavDropdown } from "react-bootstrap";
 function NavbarEle() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+    <>
+      <Navbar bg="white" className="shadow-sm" data-bs-theme="light">
+        <Container>
+          <Nav.Link as={Link} to="/" className="fs-3 fw-bold text-dark">
+            ＬＵＥＶ
+          </Nav.Link>
+          <Nav className="mx-auto">
+            <Nav.Link as={Link} to="/Shop">
+              Shop Cars
+            </Nav.Link>
+            <NavDropdown title="Financing" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="./HowFinancingWorks">How Financing works</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="./CarCalculator">Car loan Calculator</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="More" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="./About">About us</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="./Contact">Contact us</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+        </Container>
+      </Navbar>
+    </>
   );
 }
-
 export default NavbarEle;
+
+
