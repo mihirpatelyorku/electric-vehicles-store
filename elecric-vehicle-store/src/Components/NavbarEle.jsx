@@ -12,21 +12,20 @@ import { Link } from "react-router-dom";
 
 function NavbarEle() {
   return (
-<>
-      <div className="bg-black text-white">
+    <>
+      <div className="bg-black text-white new-deals-section">
         <p className="d-flex justify-content-center align-items-center m-0">
-          New deals every day.{" "} 
+          New deals every week.{" "}
           <span className="px-2">
-            <Link to="../pages/HotDeals" className="text-white">
-              <u>hot deals</u>
+            <Link to="/HotDeals" className="hot-deals-link">
+              hot deals
             </Link>
           </span>
         </p>
       </div>
-      <Container>
 
-      <Navbar bg="white" className="shadow-sm" data-bs-theme="light">
-        
+      <Container>
+        <Navbar bg="white" className="shadow-sm" data-bs-theme="light">
           <Nav.Link as={Link} to="/" className="fs-3 fw-bold text-dark">
             ＬＵＥＶ
           </Nav.Link>
@@ -60,7 +59,7 @@ function NavbarEle() {
                   type="text"
                   placeholder="Search"
                   className="me-2"
-                  />
+                />
               </Col>
               <Col xs="auto">
                 <Button type="submit">Submit</Button>
@@ -68,11 +67,13 @@ function NavbarEle() {
             </Row>
           </Form>
           <Button variant="success ms-3">Sign In / Register</Button>
-        
-      </Navbar>
-                  </Container>
-      </>
-
+        </Navbar>
+      </Container>
+    </>
   );
 }
 export default NavbarEle;
+
+
+
+
