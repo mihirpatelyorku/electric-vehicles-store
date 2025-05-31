@@ -1,6 +1,6 @@
 function HotDeals(){
-    return(<>
+    return(
     <p>hotdeals</p>
-    </>);
+);
 }
 export default HotDeals;

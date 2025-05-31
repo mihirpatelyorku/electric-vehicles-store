@@ -9,9 +9,9 @@ import NavbarEle from "./Components/NavbarEle";
 import HowFinancingWorks from "./pages/HowFinancingWorks";
 import CarCalculator from "./pages/CarCalculator";
 import Contact from "./pages/Contact"
+
 function App() {
   return (
-    <>
       <Router>
         <NavbarEle />
         <Routes>
@@ -26,7 +26,6 @@ function App() {
           <Route path="/Contact" element={<Contact />} />
         </Routes>
       </Router>
-    </>
   );
 }
 
