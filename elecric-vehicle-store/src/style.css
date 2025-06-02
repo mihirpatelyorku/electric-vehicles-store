@@ -95,8 +95,9 @@
 }
 
 .Browse {
-  margin: 1rem;
-  padding: 2rem;
+  padding-top: 3rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 .question {
@@ -125,8 +126,32 @@
 
 .browseBox > div:hover {
   transform: scale(1.1);
-  z-index: 10;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
 }
+
+.detail-section {
+  margin: 1rem;
+  padding: 1rem 5rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.detail-section h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.detail-section p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: #444;
+}
+
+
 

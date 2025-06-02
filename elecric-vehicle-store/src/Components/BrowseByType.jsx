@@ -4,8 +4,8 @@ import SuvImg from "../assets/homeImg/SUV.jpg";
 import VanImg from "../assets/homeImg/Van.jpg";
 function BrowseByType() {
   return (
-    <div className="Browse text-center">
-      <h1 className="question">What are you looking for ?</h1>
+    <div className="Browse text-center bg-light">
+      <h1 className="question">Browse Popular Vehicle Styles</h1>
       <div className="browseBox">
         <div>
           <img src={SedanImg} alt="" className="img-home" />

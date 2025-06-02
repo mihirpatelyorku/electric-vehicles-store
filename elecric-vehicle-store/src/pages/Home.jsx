@@ -1,6 +1,6 @@
 import coverImg from "../assets/homeImg/Cover.jpg";
 import BrowseByType from "../Components/BrowseByType";
-
+import Detail from "../Components/detail";
 function Home() {
   return (
     <>
@@ -8,6 +8,7 @@ function Home() {
         <img src={coverImg} alt="Cover" className="cover-image" />
       </div>
       <BrowseByType />
+      <Detail />
     </>
   );
 }
