@@ -71,48 +71,36 @@
 .cover-container {
   position: relative;
   width: 100%;
-  max-height: 550px;
+  max-height: 350px;
   overflow: hidden;
 }
 
 .cover-image {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 350px;
   object-fit: cover;
+  object-position: center 45%;
+  display: block;
 }
 
-.cover-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size:5rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-  user-select: none;
-  white-space: nowrap;
-}
-
-.img-home{
+.img-home {
   height: 200px;
 }
 
-.browseBox{
+.browseBox {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: space-between;
 }
 
-.Browse{
+.Browse {
   margin: 1rem;
   padding: 2rem;
 }
 
-.question{
-  font-family: 'Montserrat', sans-serif;
+.question {
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
 }
 
@@ -121,7 +109,7 @@
   font-weight: 600;
   font-size: 1.2rem;
   color: #333;
-  text-transform: uppercase; 
+  text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
@@ -131,15 +119,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;            
-  transition: transform 0.3s ease;  
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .browseBox > div:hover {
-  transform: scale(1.1);      
-  z-index: 10;                
-  box-shadow: 0 8px 15px rgba(0,0,0,0.3); 
-  border-radius: 12px;      
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
 }
-
 
