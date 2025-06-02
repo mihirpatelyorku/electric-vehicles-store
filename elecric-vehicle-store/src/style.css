@@ -84,7 +84,7 @@
 }
 
 .img-home {
-  height: 200px;
+  height: 150px;
 }
 
 .browseBox {
@@ -115,7 +115,6 @@
 }
 
 .browseBox > div {
-  margin: 1rem;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -124,34 +123,74 @@
   transition: transform 0.3s ease;
 }
 
+
 .browseBox > div:hover {
   transform: scale(1.1);
 }
 
-.detail-section {
-  margin: 1rem;
-  padding: 1rem 5rem;
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
+.flex-details{
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.detail-section h1 {
-  font-size: 2.8rem;
+.quality-img {
+  max-width: 1050px;
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.review {
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.review h1 {
+  font-size: 2.5rem;
   font-weight: 700;
+  margin-bottom: 3rem;
+  color: #0d1b2a;
+}
+
+.flexBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.review-Box {
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 300px;
+  flex: 1 1 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-Box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.review-Box h5 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #003566;
   margin-bottom: 1rem;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-.detail-section p {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-  color: #444;
+.review-Box p {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.5;
 }
 
-
+.review-Box p:last-child {
+  font-style: italic;
+  color: #6c757d;
+  margin-top: 1.2rem;
+}
 

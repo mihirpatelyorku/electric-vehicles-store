@@ -1,6 +1,7 @@
 import coverImg from "../assets/homeImg/Cover.jpg";
 import BrowseByType from "../Components/BrowseByType";
 import Detail from "../Components/detail";
+import Reviews from "../Components/Reviews";
 function Home() {
   return (
     <>
@@ -9,6 +10,7 @@ function Home() {
       </div>
       <BrowseByType />
       <Detail />
+      <Reviews />
     </>
   );
 }

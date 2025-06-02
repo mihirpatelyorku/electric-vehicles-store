@@ -4,7 +4,7 @@ import SuvImg from "../assets/homeImg/SUV.jpg";
 import VanImg from "../assets/homeImg/Van.jpg";
 function BrowseByType() {
   return (
-    <div className="Browse text-center bg-light">
+    <div className="Browse text-center">
       <h1 className="question">Browse Popular Vehicle Styles</h1>
       <div className="browseBox">
         <div>
