@@ -4,7 +4,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-50 items-start md:text-left">
         <div>
           <h4 className="text-lg font-semibold mb-4">Explore</h4>
-          <ul className="space-y-2 pl-0">
+          <ul className="space-y-2 padding-left">
             <li className="hover:text-blue-400 cursor-pointer">Home</li>
             <li className="hover:text-blue-400 cursor-pointer">Shop Cars</li>
             <li className="hover:text-blue-400 cursor-pointer">
@@ -15,7 +15,7 @@ function Footer() {
 
         <div>
           <h4 className="text-lg font-semibold mb-4">Company</h4>
-          <ul className="space-y-2 pl-0">
+          <ul className="space-y-2 padding-left">
             <li className="hover:text-blue-400 cursor-pointer">About Us</li>
           </ul>
         </div>
