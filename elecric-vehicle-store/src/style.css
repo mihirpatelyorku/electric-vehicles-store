@@ -197,3 +197,12 @@
 .padding-left{
   padding-left: 0;
 }
+
+.custom{
+  text-decoration: none;
+  color: white ;
+}
+.custom:hover{
+  cursor: pointer;
+  color: #60a5fa;
+}
