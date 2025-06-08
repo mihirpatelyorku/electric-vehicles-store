@@ -25,7 +25,7 @@ function About() {
           generations to come.
         </p>
       </div>
-      <div className="part-2">
+      <div className="part-2 shadow-sm">
         <img src={footerImg} alt="" />
 <div className="font-body max-w-3xl mx-auto my-10">
   <h4 className="font-heading text-2xl md:text-3xl font-semibold text-blue-700 mb-4">

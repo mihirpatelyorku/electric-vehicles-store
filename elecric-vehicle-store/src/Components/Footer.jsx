@@ -50,7 +50,7 @@ function Footer() {
 
         <div>
           <div className="fs-1 fw-bold text-white select-none">ＬＵＥＶ</div>
-          <div className="text-end text-sm text-gray-400 mt-10 p-2">
+          <div className="text-end text-sm text-gray-400 pl-2">
             © {new Date().getFullYear()} LUEV. All rights reserved.
           </div>
         </div>
