@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
 function Footer() {
+
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+
   return (
     <footer className="bg-gray-900 text-white py-10 px-6 md:px-20 p-5 mt-5 fs-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-50 items-start md:text-left">
@@ -7,17 +13,17 @@ function Footer() {
           <h4 className="text-lg font-semibold mb-4">Explore</h4>
           <ul className="space-y-2 padding-left">
             <li>
-              <Link to="/" className="custom">
+              <Link to="/" className="custom" onClick={handleScrollToTop}>
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/Shop" className="custom">
+              <Link to="/Shop" className="custom" onClick={handleScrollToTop}>
                 Shop Cars
               </Link>
             </li>
             <li>
-              <Link to="/CarCalculator" className="custom">
+              <Link to="/CarCalculator" className="custom" onClick={handleScrollToTop}>
                 Finance with LUEV
               </Link>
             </li>
@@ -28,7 +34,7 @@ function Footer() {
           <h4 className="text-lg font-semibold mb-4">Company</h4>
           <ul className="space-y-2 padding-left">
             <li>
-              <Link to="/About" className="custom">
+              <Link to="/About" className="custom" onClick={handleScrollToTop}>
                 About Us
               </Link>
             </li>

@@ -10,6 +10,7 @@ import HowFinancingWorks from "./pages/HowFinancingWorks";
 import CarCalculator from "./pages/CarCalculator";
 import Contact from "./pages/Contact"
 import Footer from "./Components/Footer";
+
 function App() {
   return (
       <Router>
