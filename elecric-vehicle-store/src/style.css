@@ -239,3 +239,37 @@
   max-width: 700px;
 }
 
+.part-1{
+  padding: 3rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.2rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.part-1 h2{
+  font-size: 3rem;
+  font-weight: 500;
+}
+
+.part-2{
+  display: flex;
+  padding: 5rem;
+}
+
+.part-2 img{
+  max-height: 400px;
+}
+
+.part-2 div{
+  padding: 4rem;
+}
+
+.part-2 div h4{
+  font-size: 2.3rem;
+}
+
+.part-2 div p{
+  font-size: 1.3rem;
+}
