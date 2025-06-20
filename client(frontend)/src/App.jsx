@@ -10,7 +10,7 @@ import HowFinancingWorks from "./pages/HowFinancingWorks";
 import CarCalculator from "./pages/CarCalculator";
 import Contact from "./pages/Contact"
 import Footer from "./Components/Footer";
-
+import Login from "./pages/login";
 function App() {
   return (
       <Router>
@@ -25,6 +25,7 @@ function App() {
           <Route path="/HowFinancingWorks" element={<HowFinancingWorks />} />
           <Route path="/CarCalculator" element={<CarCalculator />} />
           <Route path="/Contact" element={<Contact />} />
+          <Route path="/Login" element={<Login />} />
         </Routes>
         <Footer />
       </Router>
