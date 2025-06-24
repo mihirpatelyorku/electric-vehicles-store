@@ -1,4 +1,3 @@
-const pool=require("./db/pool")
 const db = require("./db/query");
 
 require("dotenv").config();
@@ -6,10 +5,12 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+
+const {initialize}=require("./passport-config")
+initialize(passport)
 
 app.use(
   cors({
@@ -30,49 +31,9 @@ app.use(
     saveUninitialized: false,
   })
 );
-
+app.use(passport.initialize())
 app.use(passport.session());
 
-passport.use(
-  new LocalStrategy({ usernameField: "email" },async (email, password, done) => {
-    try {
-      const { rows } = await pool.query(
-        "SELECT * FROM users WHERE email= $1",
-        [email]
-      );
-      const user = rows[0];
-
-      if (!user) {
-        return done(null, false, { message: "Incorrect email" });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-
-      return done(null, user);
-    } catch (err) {
-      return done(err);
-    }
-  })
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
-      id,
-    ]);
-    const user = rows[0];
-
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
-});
 
 app.get("/", (req, res) => {
   res.send("server running");
@@ -81,6 +42,11 @@ app.get("/", (req, res) => {
 app.post("/register", async (req, res) => {
   const { email, password, firstname, lastname, mobile } = req.body;
   try {
+const userExists = await db.getUserByEmail(email);
+if (userExists) {
+      return res.status(409).json({ error: "Email already in use" }); 
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.registerUser(email, hashedPassword, firstname, lastname, mobile);
 

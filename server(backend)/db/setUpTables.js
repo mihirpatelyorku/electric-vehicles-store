@@ -1,8 +1,8 @@
 const { Client } = require("pg");
 require("dotenv").config();
-SQL = `CREATE TABLE IF NOT EXISTS users(
+const SQL = `CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    email VARCHAR(55) NOT NULL,
+    email VARCHAR(55) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     firstName VARCHAR(55) NOT NULL,
     lastName VARCHAR(55) NOT NULL,
@@ -18,7 +18,7 @@ async function main() {
     await client.query(SQL);
     console.log("table created successfully");
   } catch (error) {
-    console.log(await client.end());
+    console.log("error",error);
   } finally {
     await client.end();
   }
