@@ -17,15 +17,15 @@ function App() {
         <NavbarEle />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/About" element={<About />} />
-          <Route path="/Cart" element={<Cart />} />
-          <Route path="/Checkout" element={<Checkout />} />
-          <Route path="/Shop" element={<Shop />} />
-          <Route path="/HotDeals" element={<HotDeals />} />
-          <Route path="/HowFinancingWorks" element={<HowFinancingWorks />} />
-          <Route path="/CarCalculator" element={<CarCalculator />} />
-          <Route path="/Contact" element={<Contact />} />
-          <Route path="/Login" element={<Login />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/hot-deals" element={<HotDeals />} />
+          <Route path="/how-financing-works" element={<HowFinancingWorks />} />
+          <Route path="/car-calculator" element={<CarCalculator />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
       </Router>
