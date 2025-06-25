@@ -39,6 +39,17 @@ app.get("/", (req, res) => {
   res.send("server running");
 });
 
+app.get("/cars",async(req,res)=>{
+  try {
+    const data=await db.getVehicles()
+    res.status(200).json(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({message:"Failed to fetch data"})
+  }
+})
+
+
 app.post("/register", async (req, res) => {
   const { email, password, firstname, lastname, mobile } = req.body;
   try {

@@ -21,8 +21,14 @@ async function getUserById(id) {
   return rows[0];
 }
 
+async function getVehicles() {
+  const {rows}=await pool.query("SELECT * FROM vehicles")
+  return rows;
+}
+
 module.exports = {
   registerUser,
   getUserByEmail,
-  getUserById
+  getUserById,
+  getVehicles
 };
