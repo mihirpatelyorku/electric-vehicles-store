@@ -31,7 +31,7 @@ function NavbarEle() {
           <Navbar.Toggle />
           <Navbar.Collapse>
             <Nav className="mx-auto">
-              <Nav.Link as={Link} to="/shop" className="mx-3">
+              <Nav.Link as={Link} to="/cars" className="mx-3">
                 Shop Cars
               </Nav.Link>
               <NavDropdown
