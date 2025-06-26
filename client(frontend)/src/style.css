@@ -58,16 +58,17 @@ body {
 }
 
 .expanding-search {
-  width: 200px;
-  transition: width 0.3s ease, border-radius 0.3s ease;
+  width: 500px;
+  margin: 1rem;
   border-radius: 2rem;
   padding: 0.5rem 1rem;
 }
-
-.expanding-search:hover,
 .expanding-search:focus {
-  width: 250px;
+  outline: none;
+  box-shadow: none;
+  border-color: inherit; 
 }
+
 
 .cover-container {
   position: relative;

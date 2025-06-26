@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import Search from "../Components/search";
+import CarList from "../Components/CarList";
 
 function Shop() {
   const [data, setData] = useState([]);
+  const [search,setSearch]=useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -17,24 +21,15 @@ function Shop() {
     };
     fetchData();
   }, []);
+
+  const filteredResults = data.filter(item =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
-      {data.map((item) => (
-        <div className="mt-5" key={item.id}>
-          <p>
-            <strong>Name:</strong>
-            {item.name}
-          </p>
-          <p>
-            <strong>Model:</strong>
-            {item.model}
-          </p>
-          <p>
-            <strong>Year:</strong>
-            {item.model_year}
-          </p>
-        </div>
-      ))}
+    <Search search={search} setSearch={setSearch} />
+    <CarList data={filteredResults}/>
     </>
   );
 }
