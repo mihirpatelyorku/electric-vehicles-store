@@ -25,6 +25,12 @@ function Shop() {
   const filteredResults = data.filter(item =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
+  if(filteredResults.length==0){
+    return(<>
+    <Search search={search} setSearch={setSearch} />
+    <div className="h-16 flex justify-center items-center"><p className="text-center text-gray opacity-75">no results found</p></div>
+    </>)
+  }
 
   return (
     <>

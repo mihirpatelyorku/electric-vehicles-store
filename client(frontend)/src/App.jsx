@@ -8,13 +8,14 @@ import HotDeals from "./pages/HotDeals";
 import NavbarEle from "./Components/NavbarEle";
 import HowFinancingWorks from "./pages/HowFinancingWorks";
 import CarCalculator from "./pages/CarCalculator";
-import Contact from "./pages/Contact"
+import Contact from "./pages/Contact";
 import Footer from "./Components/Footer";
 import Login from "./pages/login";
 function App() {
   return (
-      <Router>
-        <NavbarEle />
+    <Router>
+      <NavbarEle />
+      <div className="min-h-screen">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -27,8 +28,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
         </Routes>
-        <Footer />
-      </Router>
+      </div>
+      <Footer />
+    </Router>
   );
 }
 
