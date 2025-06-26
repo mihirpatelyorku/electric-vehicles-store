@@ -3,13 +3,10 @@ import {
   Navbar,
   Nav,
   NavDropdown,
-  Form,
   Button,
-  Row,
-  Col,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import Search from "./search";
 function NavbarEle() {
   return (
     <>
@@ -58,31 +55,11 @@ function NavbarEle() {
               </NavDropdown>
             </Nav>
 
-            <Form className="d-flex align-items-center me-3">
-              <Row className="gx-2">
-                <Col xs="auto">
-                  <Form.Control
-                    type="text"
-                    placeholder="Search"
-                    className="expanding-search"
-                  />
-                </Col>
-                <Col xs="auto">
-                  <Button
-                    type="submit"
-                    variant="outline-dark"
-                    className="search-btn rounded-circle d-flex justify-content-center align-items-center custom-search-btn"
-                    style={{ width: "40px", height: "40px", border: "none" }}
-                  >
-                    <i className="bi bi-search text-dark custom-search-icon"></i>
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-
             <Button
               variant="outline-secondary"
-              className="rounded-pill px-4 py-2 fw-semibold login-btn"  as={Link} to="/login"
+              className="rounded-pill px-4 py-2 fw-semibold login-btn"
+              as={Link}
+              to="/login"
             >
               Login / Register
             </Button>
@@ -90,7 +67,7 @@ function NavbarEle() {
               variant="outline-secondary"
               className="rounded-pill px-4 py-2 fw-semibold login-btn"
             >
-              Admin 
+              Admin
             </Button>
           </Navbar.Collapse>
         </Container>
@@ -100,5 +77,3 @@ function NavbarEle() {
 }
 
 export default NavbarEle;
-
-
