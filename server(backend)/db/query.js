@@ -21,8 +21,21 @@ async function getUserById(id) {
   return rows[0];
 }
 
-async function getVehicles() {
-  const {rows}=await pool.query("SELECT * FROM vehicles")
+async function getVehicles({price,mileage}={}) {
+  let query="SELECT * FROM vehicles"
+  const orderClause=[]
+  if(price){
+    orderClause.push(`price ${price.toUpperCase()}`)
+  }
+    if(mileage){
+    orderClause.push(`mileage ${mileage.toUpperCase()}`)
+  }
+
+  if(orderClause.length){
+    query+=` ORDER BY ${orderClause.join(", ")}`
+  }
+
+  const {rows}=await pool.query(query)
   return rows;
 }
 

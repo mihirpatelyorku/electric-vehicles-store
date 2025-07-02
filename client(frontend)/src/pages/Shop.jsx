@@ -8,10 +8,34 @@ function Shop() {
   const [sortPrice, setSortPrice] = useState("");
   const [sortMileage, setSortMileage] = useState("");
 
+  const handlePriceSort = (e) => {
+  setSortPrice(e.target.value);
+  setSortMileage(""); 
+};
+
+const handleMileageSort = (e) => {
+  setSortMileage(e.target.value);
+  setSortPrice(""); 
+};
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/cars`);
+        const params = new URLSearchParams();
+
+        if (sortPrice) {
+          params.append("price", sortPrice.split("_")[1]);
+        }
+
+        if (sortMileage) {
+          params.append("mileage", sortMileage.split("_")[1]);
+        }
+
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/cars${
+            params.toString() ? `?${params.toString()}` : ""
+          }`
+        );
         if (!res.ok) {
           alert("failed to fetch data");
         }
@@ -22,7 +46,7 @@ function Shop() {
       }
     };
     fetchData();
-  }, []);
+  }, [sortPrice,sortMileage]);
 
   const filteredResults = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
@@ -39,35 +63,62 @@ function Shop() {
               name="sortPrice"
               value="price_asc"
               checked={sortPrice === "price_asc"}
-              onChange={(e) => setSortPrice(e.target.value)}
+              onChange={handlePriceSort}
             />{" "}
             Low to High
           </label>
           <label className="mr-4">
-            <input type="radio" name="sortPrice" value="price_desc" checked={sortPrice === "price_desc"}
-              onChange={(e) => setSortPrice(e.target.value)} /> High to
-            Low
+            <input
+              type="radio"
+              name="sortPrice"
+              value="price_desc"
+              checked={sortPrice === "price_desc"}
+              onChange={handlePriceSort}
+            />{" "}
+            High to Low
           </label>
           <label>
-            <input type="radio" name="sortPrice" value="" checked={sortPrice === ""}
-              onChange={(e) => setSortPrice(e.target.value)}/> Auto
+            <input
+              type="radio"
+              name="sortPrice"
+              value=""
+              checked={sortPrice === ""}
+              onChange={handlePriceSort}
+            />{" "}
+            Auto
           </label>
         </div>
         <div className="mb-4">
           <span className="mr-2">Mileage:</span>
           <label className="mr-4">
-            <input type="radio" name="sortMileage" value="mileage_asc" checked={sortMileage === "mileage_asc"}
-              onChange={(e) => setSortMileage(e.target.value)}/> Low to
-            High
+            <input
+              type="radio"
+              name="sortMileage"
+              value="mileage_asc"
+              checked={sortMileage === "mileage_asc"}
+              onChange={handleMileageSort}
+            />{" "}
+            Low to High
           </label>
           <label className="mr-4">
-            <input type="radio" name="sortMileage" value="mileage_desc" checked={sortMileage === "mileage_desc"}
-              onChange={(e) => setSortMileage(e.target.value)}/> High
-            to Low
+            <input
+              type="radio"
+              name="sortMileage"
+              value="mileage_desc"
+              checked={sortMileage === "mileage_desc"}
+              onChange={handleMileageSort}
+            />{" "}
+            High to Low
           </label>
           <label>
-            <input type="radio" name="sortMileage" value="" checked={sortMileage === ""}
-              onChange={(e) => setSortMileage(e.target.value)}/> Auto
+            <input
+              type="radio"
+              name="sortMileage"
+              value=""
+              checked={sortMileage === ""}
+              onChange={handleMileageSort}
+            />{" "}
+            Auto
           </label>
         </div>
       </div>
