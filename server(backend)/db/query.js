@@ -39,9 +39,26 @@ async function getVehicles({price,mileage}={}) {
   return rows;
 }
 
+async function getDistinct() {
+  try {
+    const brands= await pool.query("SELECT DISTINCT brand FROM vehicles ORDER BY brand")
+    const model_years= await pool.query("SELECT DISTINCT model_year FROM vehicles ORDER BY model_year DESC")
+    const shape = await pool.query("SELECT DISTINCT vehicle_type FROM vehicles ORDER BY vehicle_type")
+    return {
+      brands: brands.rows.map(item=>item.brand),
+      model_years: model_years.rows.map(item=>item.model_year),
+      shape: shape.rows.map(item=>item.vehicle_type),
+      accidentHistory: [true,false]
+    };
+  } catch (err) {
+    console.error("Error in getDistinct:", err);
+  }
+}
+
 module.exports = {
   registerUser,
   getUserByEmail,
   getUserById,
-  getVehicles
+  getVehicles,
+  getDistinct
 };

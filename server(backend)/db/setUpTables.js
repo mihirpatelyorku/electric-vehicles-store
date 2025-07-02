@@ -59,7 +59,7 @@ const dummyDataVehicles=`INSERT INTO vehicles (
  'Vehicle history includes a minor paint scratch on the rear door, professionally buffed.',
  'https://images.pexels.com/photos/28500051/pexels-photo-28500051.jpeg', 6),
 
-('Honda e', 'Honda', 'e', 2020, 'Sedan', 95298.10, 8653, TRUE,
+('Honda e', 'Honda', 'e', 2020, 'Coupe', 95298.10, 8653, TRUE,
  'Honda e is a compact electric vehicle with a retro-modern design and urban-friendly features.',
  'Silver', 'Beige', 'Synthetic', TRUE,
  'Reported accident on left side; repairs completed without structural damage.',
@@ -71,7 +71,7 @@ const dummyDataVehicles=`INSERT INTO vehicles (
  'Experienced minor front bumper scrape, replaced bumper assembly.',
  'https://images.pexels.com/photos/28772164/pexels-photo-28772164.jpeg', 9),
 
-('Tesla Model Y', 'Tesla', 'Model Y', 2021, 'SUV', 89952.64, 13386, TRUE,
+('Tesla Model Y', 'Tesla', 'Model Y', 2021, 'Coupe', 89952.64, 13386, TRUE,
  'Model Y is a versatile electric SUV with ample space and advanced driver-assistance systems.',
  'Blue', 'Red', 'Fabric', TRUE,
  'No accident but minor windshield chip repaired under warranty.',
