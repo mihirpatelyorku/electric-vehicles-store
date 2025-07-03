@@ -53,7 +53,6 @@ app.get("/cars",async(req,res)=>{
 app.get("/filters",async(req,res)=>{
   try {
     const filteredData = await db.getDistinct()
-    
     res.status(200).json(filteredData)
   } catch (error) {
     console.error(error)
