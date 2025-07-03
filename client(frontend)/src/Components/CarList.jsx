@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 function CarList({ data }) {
   return (
-    <>
-      {data.map((item) => (
+    <div className="grid grid-cols-4 gap-4">      {data.map((item) => (
         <div className="mt-5" key={item.id}>
           <p>
             <strong>Name:</strong>
@@ -25,8 +24,7 @@ function CarList({ data }) {
             {item.mileage}
           </p>
         </div>
-      ))}
-    </>
+      ))}</div>
   );
 }
 

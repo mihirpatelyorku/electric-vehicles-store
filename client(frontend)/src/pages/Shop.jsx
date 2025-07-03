@@ -7,16 +7,36 @@ function Shop() {
   const [search, setSearch] = useState("");
   const [sortPrice, setSortPrice] = useState("");
   const [sortMileage, setSortMileage] = useState("");
+  const [filters, setFilters] = useState({
+    brands: [],
+    types: [],
+    years: [],
+    accidentHistory: [],
+  });
 
   const handlePriceSort = (e) => {
-  setSortPrice(e.target.value);
-  setSortMileage(""); 
-};
+    setSortPrice(e.target.value);
+    setSortMileage("");
+  };
 
-const handleMileageSort = (e) => {
-  setSortMileage(e.target.value);
-  setSortPrice(""); 
-};
+  const handleMileageSort = (e) => {
+    setSortMileage(e.target.value);
+    setSortPrice("");
+  };
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/filters`);
+        const data = await res.json();
+        setFilters(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFilters();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,17 +66,18 @@ const handleMileageSort = (e) => {
       }
     };
     fetchData();
-  }, [sortPrice,sortMileage]);
+  }, [sortPrice, sortMileage]);
 
   const filteredResults = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <>
-      <div className="m-4">
+    <div className="flex">
+      {" "}
+      <div className="m-4 p-4 border rounded w-full md:w-1/4 self-start">
         <div className="mb-4">
-          <span className="mr-2">Price:</span>
+          <h5 className="font-semibold capitalize">Price</h5>
           <label className="mr-4">
             <input
               type="radio"
@@ -89,7 +110,7 @@ const handleMileageSort = (e) => {
           </label>
         </div>
         <div className="mb-4">
-          <span className="mr-2">Mileage:</span>
+          <h5 className="font-semibold capitalize">Mileage</h5>
           <label className="mr-4">
             <input
               type="radio"
@@ -121,16 +142,32 @@ const handleMileageSort = (e) => {
             Auto
           </label>
         </div>
+
+        {Object.entries(filters).map(([key, value]) => (
+          <div key={key} className="mb-4">
+            <h5 className="font-semibold capitalize">
+              {key.replace(/([A-Z])/g, " $1")}
+            </h5>
+            {value.map((v) => (
+              <div key={v}>
+                <input type="checkbox" name={v} id={v}/>
+                <label htmlFor={v} className="ml-3">{v}</label>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
-      <Search search={search} setSearch={setSearch} />
-      {filteredResults.length == 0 ? (
-        <div className="h-16 flex justify-center items-center">
-          <p className="text-center text-gray opacity-75">no results found</p>
-        </div>
-      ) : (
-        <CarList data={filteredResults} />
-      )}
-    </>
+      <div className="py-4 px-6 w-3/4 flex flex-col">
+        <Search search={search} setSearch={setSearch} />
+        {filteredResults.length == 0 ? (
+          <div className="h-16 flex justify-center items-center">
+            <p className="text-center text-gray opacity-75">no results found</p>
+          </div>
+        ) : (
+          <CarList data={filteredResults} />
+        )}
+      </div>
+    </div>
   );
 }
 export default Shop;
