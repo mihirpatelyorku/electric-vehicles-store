@@ -58,7 +58,7 @@ function Login() {
           navigate("/");
         } else {
           alert("Registered!");
-          handleClick()
+          handleClick();
         }
       } else {
         alert(data.error || "Error");

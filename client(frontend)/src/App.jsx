@@ -11,6 +11,7 @@ import CarCalculator from "./pages/CarCalculator";
 import Contact from "./pages/Contact";
 import Footer from "./Components/Footer";
 import Login from "./pages/login";
+import VehicleDetail from "./pages/VehicleDetail";
 function App() {
   return (
     <Router>
@@ -27,6 +28,7 @@ function App() {
           <Route path="/car-calculator" element={<CarCalculator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cars/:id" element={<VehicleDetail />} />
         </Routes>
       </div>
       <Footer />

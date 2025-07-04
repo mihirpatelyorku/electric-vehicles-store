@@ -14,6 +14,13 @@ function Shop() {
     accidentHistory: [],
   });
 
+  // const [selectedfilters, setSelectedFilters] = useState({
+  //   brands: [],
+  //   types: [],
+  //   years: [],
+  //   accidentHistory: [],
+  // });
+
   const handlePriceSort = (e) => {
     setSortPrice(e.target.value);
     setSortMileage("");
@@ -71,6 +78,8 @@ function Shop() {
   const filteredResults = data.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
+
+
 
   return (
     <div className="flex">
@@ -150,8 +159,10 @@ function Shop() {
             </h5>
             {value.map((v) => (
               <div key={v}>
-                <input type="checkbox" name={v} id={v}/>
-                <label htmlFor={v} className="ml-3">{v}</label>
+                <input type="checkbox" name={v} id={v} />
+                <label htmlFor={v} className="ml-3">
+                  {v}
+                </label>
               </div>
             ))}
           </div>
