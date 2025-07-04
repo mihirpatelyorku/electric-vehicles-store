@@ -1,30 +1,44 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+
+
 function CarList({ data }) {
   return (
-    <div className="grid grid-cols-4 gap-4">      {data.map((item) => (
-        <div className="mt-5" key={item.id}>
-          <p>
-            <strong>Name:</strong>
-            {item.name}
-          </p>
-          <p>
-            <strong>Model:</strong>
-            {item.model}
-          </p>
-          <p>
-            <strong>Year:</strong>
-            {item.model_year}
-          </p>
-          <p>
-            <strong>Price:</strong>
-            {item.price}
-          </p>
-          <p>
-            <strong>Mileage:</strong>
-            {item.mileage}
-          </p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6 my-2 py-2">
+      {data.map((item) => (
+        <div key={item.id}>
+          <Link
+            to={`/cars/${item.id}`}
+            className="block no-underline text-black border rounded-2xl shadow-sm hover:bg-red transition h-100 overflow-hidden"
+          >
+            <div className="space-y-2 overflow-hidden text-ellipsis">
+              <img
+                src={item.image_url}
+                alt=""
+                className="object-fit-cover w-full h-40"
+              />
+              <div className="p-2">
+                {" "}
+                <p className="truncate">
+                  <strong>
+                    {item.model_year} {item.name} | {item.model}
+                  </strong>
+                </p>
+                <p className="truncate">
+                  {item.vehicle_type} | {item.brand} | {item.description}
+                </p>
+                <p className="truncate text-lg font-bold border-t-1 my-3 py-2">
+                  ${Math.floor(item.price)}
+                </p>
+               <button className="mb-2 p-1 rounded w-full bg-amber-300 hover:bg-amber-400">Add to Cart</button>
+              </div>
+            </div>
+                 
+          </Link>
+          
         </div>
-      ))}</div>
+      ))}
+    </div>
   );
 }
 
@@ -36,8 +50,8 @@ CarList.propTypes = {
       model: PropTypes.string.isRequired,
       model_year: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
-      price:PropTypes.number.isRequired,
-      mileage:PropTypes.number.isRequired
+      price: PropTypes.number.isRequired,
+      mileage: PropTypes.number.isRequired,
     })
   ).isRequired,
 };
