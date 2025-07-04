@@ -21,6 +21,12 @@ async function getUserById(id) {
   return rows[0];
 }
 
+async function getVehicleById(id){
+  const {rows} = await pool.query("SELECT * FROM vehicles WHERE id = $1", [id]);
+  console.log("Vehicle row:", rows[0]);
+  return rows[0];
+}
+
 async function getVehicles({price,mileage}={}) {
   let query="SELECT * FROM vehicles"
   const orderClause=[]
@@ -60,7 +66,8 @@ module.exports = {
   getUserByEmail,
   getUserById,
   getVehicles,
-  getDistinct
+  getDistinct,
+  getVehicleById
 };
 
 
