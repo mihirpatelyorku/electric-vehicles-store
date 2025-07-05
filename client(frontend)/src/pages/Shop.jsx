@@ -14,12 +14,12 @@ function Shop() {
     accidentHistory: [],
   });
 
-  // const [selectedfilters, setSelectedFilters] = useState({
-  //   brands: [],
-  //   types: [],
-  //   years: [],
-  //   accidentHistory: [],
-  // });
+  const [selectedFilters, setSelectedFilters] = useState({
+    brands: [],
+    types: [],
+    years: [],
+    accidentHistory: [],
+  });
 
   const handlePriceSort = (e) => {
     setSortPrice(e.target.value);
@@ -75,13 +75,32 @@ function Shop() {
     fetchData();
   }, [sortPrice, sortMileage]);
 
-  const filteredResults = data.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())||
-  item.model.toLowerCase().includes(search.toLowerCase()) ||
-  item.vehicle_type.toLowerCase().includes(search.toLowerCase()) ||
-  item.model_year.toString().includes(search.toLowerCase()) 
+  const filteredResults = data.filter(
+    (item) =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.model.toLowerCase().includes(search.toLowerCase()) ||
+      item.vehicle_type.toLowerCase().includes(search.toLowerCase()) ||
+      item.model_year.toString().includes(search.toLowerCase())
   );
 
+const handleFilterChange = (category, value) => {
+  setSelectedFilters((prev) => {
+    const currentValues = prev[category] || [];
+
+    if (currentValues.includes(value)) {
+      return {
+        ...prev,
+        [category]: currentValues.filter((v) => v !== value),
+      };
+    } else {
+   
+      return {
+        ...prev,
+        [category]: [...currentValues, value],
+      };
+    }
+  });
+};
 
 
   return (
@@ -162,7 +181,15 @@ function Shop() {
             </h5>
             {value.map((v) => (
               <div key={v}>
-                <input type="checkbox" name={v} id={v} />
+                <input
+                  type="checkbox"
+                  name={v}
+                  id={v}
+                  checked={(selectedFilters[key] || []).includes(v)}
+
+
+                  onChange={() => handleFilterChange(key,v)}
+                />
                 <label htmlFor={v} className="ml-3">
                   {v}
                 </label>
