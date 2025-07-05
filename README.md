@@ -118,6 +118,8 @@ Visit: [http://localhost:5173](http://localhost:5173)
 ```env
 PORT=3000
 DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/ev_store
+FRONTEND_URL=http://localhost:5173
+SESSION_SECRET="some secret"
 ```
 
 ### `client(frontend)/.env`
