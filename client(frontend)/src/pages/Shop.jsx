@@ -76,7 +76,10 @@ function Shop() {
   }, [sortPrice, sortMileage]);
 
   const filteredResults = data.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    item.name.toLowerCase().includes(search.toLowerCase())||
+  item.model.toLowerCase().includes(search.toLowerCase()) ||
+  item.vehicle_type.toLowerCase().includes(search.toLowerCase()) ||
+  item.model_year.toString().includes(search.toLowerCase()) 
   );
 
 
@@ -84,10 +87,10 @@ function Shop() {
   return (
     <div className="flex">
       {" "}
-      <div className="m-4 p-4 border rounded w-full md:w-1/4 self-start">
+      <div className="m-4 p-4 border rounded w-full md:w-1/5 self-start overflow-y-auto max-h-screen sticky top-0">
         <div className="mb-4">
           <h5 className="font-semibold capitalize">Price</h5>
-          <label className="mr-4">
+          <label className="mr-4 d-block">
             <input
               type="radio"
               name="sortPrice"
@@ -97,7 +100,7 @@ function Shop() {
             />{" "}
             Low to High
           </label>
-          <label className="mr-4">
+          <label className="mr-4 d-block">
             <input
               type="radio"
               name="sortPrice"
@@ -119,7 +122,7 @@ function Shop() {
           </label>
         </div>
         <div className="mb-4">
-          <h5 className="font-semibold capitalize">Mileage</h5>
+          <h5 className="font-semibold capitalize d-block">Mileage</h5>
           <label className="mr-4">
             <input
               type="radio"
@@ -130,7 +133,7 @@ function Shop() {
             />{" "}
             Low to High
           </label>
-          <label className="mr-4">
+          <label className="mr-4 d-block">
             <input
               type="radio"
               name="sortMileage"
@@ -168,7 +171,7 @@ function Shop() {
           </div>
         ))}
       </div>
-      <div className="py-4 px-6 w-3/4 flex flex-col">
+      <div className="py-4 px-6 w-4/5 flex flex-col">
         <Search search={search} setSearch={setSearch} />
         {filteredResults.length == 0 ? (
           <div className="h-16 flex justify-center items-center">

@@ -54,7 +54,7 @@ async function getDistinct() {
       brands: brands.rows.map(item=>item.brand),
       modelYears: modelYears.rows.map(item=>item.model_year),
       shape: shape.rows.map(item=>item.vehicle_type),
-      accidentHistory: ["With Accidents / Damages","Without Accidents / Damages"]
+      accidentHistory: ["With Accidents","Without Accidents"]
     };
   } catch (err) {
     console.error("Error in getDistinct:", err);
