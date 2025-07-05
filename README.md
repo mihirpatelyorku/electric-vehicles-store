@@ -11,7 +11,7 @@ A full-stack web application for browsing and filtering electric vehicles.
 electric-vehicles-store/
 │
 ├── client(frontend)/       # React + Vite frontend
-└── server/                 # Node.js + Express backend
+└── server(backend)/        # Node.js + Express backend
     └── db/
         └── setUpTables.js  # Script to set up PostgreSQL tables
 ```
