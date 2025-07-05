@@ -1,5 +1,5 @@
 
-# ⚡ Electric Vehicles Store
+# ⚡ LUEV | Electric Vehicles Store
 
 A full-stack web application for browsing and filtering electric vehicles.
 
