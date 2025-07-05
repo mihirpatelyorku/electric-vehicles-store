@@ -1,4 +1,5 @@
-# ⚡ LUEV | Electric Vehicles Store
+
+# ⚡ Electric Vehicles Store
 
 A full-stack web application for browsing and filtering electric vehicles.
 
@@ -9,15 +10,17 @@ A full-stack web application for browsing and filtering electric vehicles.
 ```
 electric-vehicles-store/
 │
-├── client(frontend)/     # React + Vite frontend
-└── server(backend)/      # Node.js + Express backend 
+├── client(frontend)/       # React + Vite frontend
+└── server/                 # Node.js + Express backend
+    └── db/
+        └── setUpTables.js  # Script to set up PostgreSQL tables
 ```
 
 ---
 
 ## 🖥️ Local Setup Instructions
 
-### 1. Clone the Repository and go inside cloned project
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/mihirpatelyorku/electric-vehicles-store.git
@@ -27,6 +30,7 @@ cd electric-vehicles-store
 ---
 
 ## 🔧 Backend Setup (Node.js + Express)
+
 
 
 ### 2. Install Dependencies
@@ -47,7 +51,17 @@ FRONTEND_URL=http://localhost:5173
 SESSION_SECRET="some secret"
 ```
 
-### 4. Start Backend Server
+
+### 4. Set Up the Database Tables
+
+Run the following script to create necessary tables in your PostgreSQL database:
+
+```bash
+node db/setUpTables.js
+```
+
+
+### 5. Start Backend Server
 
 ```bash
 node --watch server.js
@@ -58,22 +72,22 @@ node --watch server.js
 
 ## 🎨 Frontend Setup (React + Vite)
 
-### 5. Install Dependencies
+### 6. Install Dependencies
 
 ```bash
 cd ../client(frontend)
 npm install
 ```
 
-### 6. Configure Frontend Environment
+### 7. Configure Frontend Environment
 
-Make the `.env` file inside `client(frontend)/`:
+Create or edit the `.env` file inside `client(frontend)/`:
 
 ```env
 VITE_API_URL=http://localhost:3000
 ```
 
-### 7. Start Frontend App
+### 8. Start Frontend App
 
 ```bash
 npm run dev
@@ -89,10 +103,11 @@ Visit: [http://localhost:5173](http://localhost:5173)
 
 ## 📦 Scripts Summary
 
-| Location             | Command           | Purpose                  |
-|----------------------|-------------------|---------------------------|
-| `server/`            | `node --watch server.js`     | Start backend server      |
-| `client(frontend)/`  | `npm run dev`     | Start frontend (Vite)     |
+| Location             | Command                   | Purpose                     |
+|----------------------|---------------------------|------------------------------|
+| `server/`            | `node --watch server.js`             | Start backend server         |
+| `server/db/`         | `node setUpTables.js`     | Create PostgreSQL tables     |
+| `client(frontend)/`  | `npm run dev`             | Start frontend (Vite)        |
 
 ---
 
@@ -102,9 +117,7 @@ Visit: [http://localhost:5173](http://localhost:5173)
 
 ```env
 PORT=3000
-DATABASE_URL=your_postgresql_connection_url
-FRONTEND_URL=http://localhost:5173
-SESSION_SECRET="some secret"
+DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/ev_store
 ```
 
 ### `client(frontend)/.env`
