@@ -41,8 +41,20 @@ app.get("/", (req, res) => {
 
 app.get("/cars",async(req,res)=>{
   try {
-    const {price,mileage}=req.query
-    const data=await db.getVehicles({price,mileage})
+    
+    const {price,mileage,brands,shape,modelYears,accidentHistory}=req.query
+
+    const parsedFilters = {
+      price,
+      mileage,
+      brands: brands ? brands.split(",") : [],
+      shape: shape ? shape.split(",") : [],
+      modelYears: modelYears ? modelYears.split(",") : [],
+      accidentHistory: accidentHistory ? accidentHistory.split(",") : [],
+    };
+    
+    const data=await db.getVehicles({...parsedFilters})
+    
     res.status(200).json(data)
   } catch (error) {
     console.error(error)

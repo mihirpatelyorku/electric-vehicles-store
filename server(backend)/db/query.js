@@ -27,23 +27,70 @@ async function getVehicleById(id){
   return rows[0];
 }
 
-async function getVehicles({price,mileage}={}) {
-  let query="SELECT * FROM vehicles"
-  const orderClause=[]
-  if(price){
-    orderClause.push(`price ${price.toUpperCase()}`)
-  }
-    if(mileage){
-    orderClause.push(`mileage ${mileage.toUpperCase()}`)
+async function getVehicles({
+  price,
+  mileage,
+  brands = [],
+  shape = [],
+  modelYears = [],
+  accidentHistory = [],
+} = {}) {
+
+  const normalizedAccidentHistory = accidentHistory.map((s) => {
+    const lower = s.toLowerCase().trim();
+    if (lower === "with accidents") return true;
+    if (lower === "without accidents") return false;
+ 
+    return null; 
+  }).filter((v) => v !== null);
+
+  let query = `SELECT * FROM vehicles`;
+  const queryParts = [];
+  const values = [];
+
+  if (brands.length > 0) {
+    values.push(brands);
+    queryParts.push(`brand = ANY($${values.length})`);
   }
 
-  if(orderClause.length){
-    query+=` ORDER BY ${orderClause.join(", ")}`
+  if (shape.length > 0) {
+    values.push(shape);
+    queryParts.push(`vehicle_type = ANY($${values.length})`);
   }
 
-  const {rows}=await pool.query(query)
+  if (modelYears.length > 0) {
+    values.push(modelYears);
+    queryParts.push(`model_year = ANY($${values.length})`);
+  }
+
+  if (normalizedAccidentHistory.length > 0) {
+    values.push(normalizedAccidentHistory);
+    queryParts.push(`accident_history = ANY($${values.length})`);
+  }
+
+  if (queryParts.length > 0) {
+    query += ` WHERE ${queryParts.join(" AND ")}`;
+  }
+
+  const orderClause = [];
+  if (price) {
+    orderClause.push(`price ${price.toUpperCase()}`);
+  }
+  if (mileage) {
+    orderClause.push(`mileage ${mileage.toUpperCase()}`);
+  }
+
+  if (orderClause.length > 0) {
+    query += ` ORDER BY ${orderClause.join(", ")}`;
+  }
+
+
+  const { rows } = await pool.query(query, values);
   return rows;
 }
+
+
+
 
 async function getDistinct() {
   try {

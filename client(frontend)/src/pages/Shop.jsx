@@ -58,6 +58,11 @@ function Shop() {
           params.append("mileage", sortMileage.split("_")[1]);
         }
 
+         Object.entries(selectedFilters).forEach(([key, values]) => {
+        if (values.length > 0) {
+          params.append(key, values.join(",")); 
+        }
+      });
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/cars${
             params.toString() ? `?${params.toString()}` : ""
@@ -73,7 +78,7 @@ function Shop() {
       }
     };
     fetchData();
-  }, [sortPrice, sortMileage]);
+  }, [sortPrice, sortMileage,selectedFilters]);
 
   const filteredResults = data.filter(
     (item) =>
@@ -83,25 +88,23 @@ function Shop() {
       item.model_year.toString().includes(search.toLowerCase())
   );
 
-const handleFilterChange = (category, value) => {
-  setSelectedFilters((prev) => {
-    const currentValues = prev[category] || [];
+  const handleFilterChange = (category, value) => {
+    setSelectedFilters((prev) => {
+      const currentValues = prev[category] || [];
 
-    if (currentValues.includes(value)) {
-      return {
-        ...prev,
-        [category]: currentValues.filter((v) => v !== value),
-      };
-    } else {
-   
-      return {
-        ...prev,
-        [category]: [...currentValues, value],
-      };
-    }
-  });
-};
-
+      if (currentValues.includes(value)) {
+        return {
+          ...prev,
+          [category]: currentValues.filter((v) => v !== value),
+        };
+      } else {
+        return {
+          ...prev,
+          [category]: [...currentValues, value],
+        };
+      }
+    });
+  };
 
   return (
     <div className="flex">
@@ -186,9 +189,7 @@ const handleFilterChange = (category, value) => {
                   name={v}
                   id={v}
                   checked={(selectedFilters[key] || []).includes(v)}
-
-
-                  onChange={() => handleFilterChange(key,v)}
+                  onChange={() => handleFilterChange(key, v)}
                 />
                 <label htmlFor={v} className="ml-3">
                   {v}
