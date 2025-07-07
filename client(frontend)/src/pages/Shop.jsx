@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Search from "../Components/search";
 import CarList from "../Components/CarList";
 import { useNavigate, useLocation } from "react-router-dom";
+
 function Shop() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -22,20 +23,14 @@ function Shop() {
     hotDeal: false,
   });
 
-  const handlePriceSort = (e) => {
-    setSortPrice(e.target.value);
-    setSortMileage("");
-  };
-
-  const handleMileageSort = (e) => {
-    setSortMileage(e.target.value);
-    setSortPrice("");
-  };
   const location = useLocation();
+  const navigate = useNavigate();
 
+ 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const hotDealParam = params.get("hot_deal");
+
     const newSelectedFilters = {
       brands: [],
       shape: [],
@@ -47,7 +42,6 @@ function Shop() {
     ["brands", "shape", "modelYears", "accidentHistory"].forEach((key) => {
       const value = params.get(key);
       if (value) {
-        // Remove duplicates here
         newSelectedFilters[key] = Array.from(new Set(value.split(",")));
       }
     });
@@ -57,18 +51,10 @@ function Shop() {
     const priceSort = params.get("price");
     const mileageSort = params.get("mileage");
 
-    if (priceSort) {
-      setSortPrice(`price_${priceSort}`);
-    } else {
-      setSortPrice("");
-    }
-
-    if (mileageSort) {
-      setSortMileage(`mileage_${mileageSort}`);
-    } else {
-      setSortMileage("");
-    }
+    setSortPrice(priceSort ? `price_${priceSort}` : "");
+    setSortMileage(mileageSort ? `mileage_${mileageSort}` : "");
   }, [location.search]);
+
 
   useEffect(() => {
     const fetchFilters = async () => {
@@ -76,7 +62,6 @@ function Shop() {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/filters`);
         const data = await res.json();
 
-        // Convert modelYears numbers to strings to match selectedFilters values
         if (data.modelYears) {
           data.modelYears = data.modelYears.map(String);
         }
@@ -90,41 +75,43 @@ function Shop() {
     fetchFilters();
   }, []);
 
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (sortPrice) {
+      params.append("price", sortPrice.split("_")[1]);
+    }
+
+    if (sortMileage) {
+      params.append("mileage", sortMileage.split("_")[1]);
+    }
+
+    Object.entries(selectedFilters).forEach(([key, values]) => {
+      if (key !== "hotDeal" && values.length > 0) {
+        params.append(key, values.join(","));
+      }
+    });
+
+    if (selectedFilters.hotDeal) {
+      params.append("hot_deal", "true");
+    }
+
+    navigate(`?${params.toString().replace(/%2C/g, ",")}`, { replace: true });
+  }, [sortPrice, sortMileage, selectedFilters,navigate]);
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const params = new URLSearchParams();
-
-        if (sortPrice) {
-          params.append("price", sortPrice.split("_")[1]);
-        }
-
-        if (sortMileage) {
-          params.append("mileage", sortMileage.split("_")[1]);
-        }
-
-        Object.entries(selectedFilters).forEach(([key, values]) => {
-          if (values.length > 0) {
-            params.append(key, values.join(","));
-          }
-        });
-
-        if (selectedFilters.hotDeal) {
-          params.append("hot_deal", "true");
-        }
-
-        navigate(`?${params.toString().replace(/%2C/g, ",")}`, {
-          replace: true,
-        });
-
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/cars${
-            params.toString() ? `?${params.toString()}` : ""
+            location.search ? `?${location.search.slice(1)}` : ""
           }`
         );
         if (!res.ok) {
           alert("failed to fetch data");
+          return;
         }
         const data = await res.json();
         setData(data);
@@ -133,7 +120,7 @@ function Shop() {
       }
     };
     fetchData();
-  }, [sortPrice, sortMileage, selectedFilters, navigate]);
+  }, [location.search]);
 
   const filteredResults = data.filter(
     (item) =>
@@ -142,6 +129,16 @@ function Shop() {
       item.vehicle_type.toLowerCase().includes(search.toLowerCase()) ||
       item.model_year.toString().includes(search.toLowerCase())
   );
+
+  const handlePriceSort = (e) => {
+    setSortPrice(e.target.value);
+    setSortMileage("");
+  };
+
+  const handleMileageSort = (e) => {
+    setSortMileage(e.target.value);
+    setSortPrice("");
+  };
 
   const handleFilterChange = (category, value) => {
     setSelectedFilters((prev) => {
@@ -163,7 +160,6 @@ function Shop() {
 
   return (
     <div className="flex">
-      {" "}
       <div className="m-4 p-4 border rounded w-full md:w-1/5 self-start overflow-y-auto max-h-screen sticky top-0">
         <div className="mb-4">
           <h5 className="font-semibold capitalize">Price</h5>
@@ -174,8 +170,7 @@ function Shop() {
               value="price_asc"
               checked={sortPrice === "price_asc"}
               onChange={handlePriceSort}
-            />{" "}
-            Low to High
+            /> Low to High
           </label>
           <label className="mr-4 d-block">
             <input
@@ -184,8 +179,7 @@ function Shop() {
               value="price_desc"
               checked={sortPrice === "price_desc"}
               onChange={handlePriceSort}
-            />{" "}
-            High to Low
+            /> High to Low
           </label>
           <label>
             <input
@@ -194,8 +188,7 @@ function Shop() {
               value=""
               checked={sortPrice === ""}
               onChange={handlePriceSort}
-            />{" "}
-            Auto
+            /> Auto
           </label>
         </div>
         <div className="mb-4">
@@ -207,8 +200,7 @@ function Shop() {
               value="mileage_asc"
               checked={sortMileage === "mileage_asc"}
               onChange={handleMileageSort}
-            />{" "}
-            Low to High
+            /> Low to High
           </label>
           <label className="mr-4 d-block">
             <input
@@ -217,8 +209,7 @@ function Shop() {
               value="mileage_desc"
               checked={sortMileage === "mileage_desc"}
               onChange={handleMileageSort}
-            />{" "}
-            High to Low
+            /> High to Low
           </label>
           <label>
             <input
@@ -227,8 +218,7 @@ function Shop() {
               value=""
               checked={sortMileage === ""}
               onChange={handleMileageSort}
-            />{" "}
-            Auto
+            /> Auto
           </label>
         </div>
 
@@ -256,7 +246,7 @@ function Shop() {
       </div>
       <div className="py-4 px-6 w-4/5 flex flex-col">
         <Search search={search} setSearch={setSearch} />
-        {filteredResults.length == 0 ? (
+        {filteredResults.length === 0 ? (
           <div className="h-16 flex justify-center items-center">
             <p className="text-center text-gray opacity-75">no results found</p>
           </div>
@@ -267,4 +257,5 @@ function Shop() {
     </div>
   );
 }
+
 export default Shop;
