@@ -11,12 +11,16 @@ function CarList({ data }) {
             to={`/cars/${item.id}`}
             className="block no-underline text-black border rounded-2xl shadow-sm hover:bg-red transition h-100 overflow-hidden"
           >
-            <div className="space-y-2 overflow-hidden text-ellipsis">
+            <div className="space-y-2 overflow-hidden text-ellipsis ">
+              <div className="relative">
               <img
                 src={item.image_url}
                 alt=""
                 className="object-fit-cover w-full h-40"
               />
+              {item.is_hot_deal ? (<p className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow">SALE</p>) : (<></>)}
+              </div>
+
               <div className="p-2">
                 {" "}
                 <p className="truncate">

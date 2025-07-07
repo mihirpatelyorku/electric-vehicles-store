@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Search from "../Components/search";
 import CarList from "../Components/CarList";
-
+import { useNavigate, useLocation } from "react-router-dom";
 function Shop() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -9,16 +9,17 @@ function Shop() {
   const [sortMileage, setSortMileage] = useState("");
   const [filters, setFilters] = useState({
     brands: [],
-    types: [],
-    years: [],
+    shape: [],
+    modelYears: [],
     accidentHistory: [],
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
     brands: [],
-    types: [],
-    years: [],
+    shape: [],
+    modelYears: [],
     accidentHistory: [],
+    hotDeal: false,
   });
 
   const handlePriceSort = (e) => {
@@ -30,12 +31,56 @@ function Shop() {
     setSortMileage(e.target.value);
     setSortPrice("");
   };
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hotDealParam = params.get("hot_deal");
+    const newSelectedFilters = {
+      brands: [],
+      shape: [],
+      modelYears: [],
+      accidentHistory: [],
+      hotDeal: hotDealParam === "true",
+    };
+
+    ["brands", "shape", "modelYears", "accidentHistory"].forEach((key) => {
+      const value = params.get(key);
+      if (value) {
+        // Remove duplicates here
+        newSelectedFilters[key] = Array.from(new Set(value.split(",")));
+      }
+    });
+
+    setSelectedFilters(newSelectedFilters);
+
+    const priceSort = params.get("price");
+    const mileageSort = params.get("mileage");
+
+    if (priceSort) {
+      setSortPrice(`price_${priceSort}`);
+    } else {
+      setSortPrice("");
+    }
+
+    if (mileageSort) {
+      setSortMileage(`mileage_${mileageSort}`);
+    } else {
+      setSortMileage("");
+    }
+  }, [location.search]);
 
   useEffect(() => {
     const fetchFilters = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/filters`);
         const data = await res.json();
+
+        // Convert modelYears numbers to strings to match selectedFilters values
+        if (data.modelYears) {
+          data.modelYears = data.modelYears.map(String);
+        }
+
         setFilters(data);
       } catch (error) {
         console.error(error);
@@ -45,6 +90,7 @@ function Shop() {
     fetchFilters();
   }, []);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,11 +104,20 @@ function Shop() {
           params.append("mileage", sortMileage.split("_")[1]);
         }
 
-         Object.entries(selectedFilters).forEach(([key, values]) => {
-        if (values.length > 0) {
-          params.append(key, values.join(",")); 
+        Object.entries(selectedFilters).forEach(([key, values]) => {
+          if (values.length > 0) {
+            params.append(key, values.join(","));
+          }
+        });
+
+        if (selectedFilters.hotDeal) {
+          params.append("hot_deal", "true");
         }
-      });
+
+        navigate(`?${params.toString().replace(/%2C/g, ",")}`, {
+          replace: true,
+        });
+
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/cars${
             params.toString() ? `?${params.toString()}` : ""
@@ -78,7 +133,7 @@ function Shop() {
       }
     };
     fetchData();
-  }, [sortPrice, sortMileage,selectedFilters]);
+  }, [sortPrice, sortMileage, selectedFilters, navigate]);
 
   const filteredResults = data.filter(
     (item) =>
@@ -100,7 +155,7 @@ function Shop() {
       } else {
         return {
           ...prev,
-          [category]: [...currentValues, value],
+          [category]: Array.from(new Set([...currentValues, value])),
         };
       }
     });
@@ -188,7 +243,7 @@ function Shop() {
                   type="checkbox"
                   name={v}
                   id={v}
-                  checked={(selectedFilters[key] || []).includes(v)}
+                  checked={(selectedFilters[key] || []).includes(String(v))}
                   onChange={() => handleFilterChange(key, v)}
                 />
                 <label htmlFor={v} className="ml-3">

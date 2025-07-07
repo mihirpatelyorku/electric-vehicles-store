@@ -34,6 +34,7 @@ async function getVehicles({
   shape = [],
   modelYears = [],
   accidentHistory = [],
+  hot_deal=false
 } = {}) {
 
   const normalizedAccidentHistory = accidentHistory.map((s) => {
@@ -66,6 +67,11 @@ async function getVehicles({
   if (normalizedAccidentHistory.length > 0) {
     values.push(normalizedAccidentHistory);
     queryParts.push(`accident_history = ANY($${values.length})`);
+  }
+
+  if(hot_deal){
+    values.push(true)
+    queryParts.push(`is_hot_deal = $${values.length}`)
   }
 
   if (queryParts.length > 0) {

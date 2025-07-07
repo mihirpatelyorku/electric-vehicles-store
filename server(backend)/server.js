@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 app.get("/cars",async(req,res)=>{
   try {
     
-    const {price,mileage,brands,shape,modelYears,accidentHistory}=req.query
+    const {price,mileage,brands,shape,modelYears,accidentHistory,hot_deal}=req.query
 
     const parsedFilters = {
       price,
@@ -51,6 +51,7 @@ app.get("/cars",async(req,res)=>{
       shape: shape ? shape.split(",") : [],
       modelYears: modelYears ? modelYears.split(",") : [],
       accidentHistory: accidentHistory ? accidentHistory.split(",") : [],
+      hot_deal: hot_deal === "true", 
     };
     
     const data=await db.getVehicles({...parsedFilters})

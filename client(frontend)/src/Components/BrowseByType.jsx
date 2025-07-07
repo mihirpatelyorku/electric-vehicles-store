@@ -2,7 +2,9 @@ import SedanImg from "../assets/homeImg/Sedan.jpg";
 import CoupeImg from "../assets/homeImg/Coupe.jpg";
 import SuvImg from "../assets/homeImg/SUV.jpg";
 import VanImg from "../assets/homeImg/Van.jpg";
+import { Link } from "react-router-dom";
 function BrowseByType() {
+
   return (
     <div className="Browse text-center">
       <h1 className="question">Browse Popular Vehicle Styles</h1>

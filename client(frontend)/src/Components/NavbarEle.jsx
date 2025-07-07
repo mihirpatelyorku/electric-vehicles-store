@@ -6,7 +6,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Search from "./search";
+
 function NavbarEle() {
   return (
     <>
@@ -14,7 +14,7 @@ function NavbarEle() {
         <p className="d-flex justify-content-center align-items-center m-0">
           New deals every week.{" "}
           <span className="px-2">
-            <Link to="/hot-deals" className="hot-deals-link">
+            <Link to="/cars?hot_deal=true" className="hot-deals-link">
               hot deals
             </Link>
           </span>
@@ -77,3 +77,4 @@ function NavbarEle() {
 }
 
 export default NavbarEle;
+
