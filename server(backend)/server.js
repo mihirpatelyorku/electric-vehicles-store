@@ -35,10 +35,6 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 
-app.get("/", (req, res) => {
-  res.send("server running");
-});
-
 app.get("/cars",async(req,res)=>{
   try {
     
@@ -117,7 +113,7 @@ app.post("/login", (req, res, next) => {
 
 app.get("/me", (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({ user: req.user });
+    res.status(200).json({ user: req.user });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }

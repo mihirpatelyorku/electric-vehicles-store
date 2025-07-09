@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UseAuth from "../contexts/UseAuth";
 function Login() {
   const [login, setLogin] = useState(true);
 
@@ -13,6 +14,7 @@ function Login() {
   });
 
   const navigate = useNavigate();
+    const { setUser } = UseAuth();
 
   const handleClick = () => {
     setLogin(!login);
@@ -54,6 +56,7 @@ function Login() {
 
       if (res.ok) {
         if (login) {
+            setUser(data.user);
           alert("Logged in!");
           navigate("/");
         } else {

@@ -1,13 +1,19 @@
-import {
-  Container,
-  Navbar,
-  Nav,
-  NavDropdown,
-  Button,
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
+import { Link,useNavigate } from "react-router-dom";
+import UseAuth from "../contexts/UseAuth";
 
 function NavbarEle() {
+  const { user, logout,authChecked} = UseAuth();
+  const navigate = useNavigate();
+  const handleLogOut = async () => {
+    await logout();
+    alert("Logged Out");
+    navigate("/");
+  };
+    if (!authChecked) {
+    return null; 
+  }
+
   return (
     <>
       <div className="bg-black text-white new-deals-section">
@@ -54,21 +60,42 @@ function NavbarEle() {
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
-
-            <Button
-              variant="outline-secondary"
-              className="rounded-pill px-4 py-2 fw-semibold login-btn"
-              as={Link}
-              to="/login"
-            >
-              Login / Register
-            </Button>
-            <Button
-              variant="outline-secondary"
-              className="rounded-pill px-4 py-2 fw-semibold login-btn"
-            >
-              Admin
-            </Button>
+            {user ? (
+              <>
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                  as={Link}
+                  to="/cart"
+                >
+                  Cart
+                </Button>
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                  onClick={handleLogOut}
+                >
+                  Log Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                  as={Link}
+                  to="/login"
+                >
+                  Login / Register
+                </Button>
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                >
+                  Admin
+                </Button>
+              </>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -77,4 +104,3 @@ function NavbarEle() {
 }
 
 export default NavbarEle;
-
