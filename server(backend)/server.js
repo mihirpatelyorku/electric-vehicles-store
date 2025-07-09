@@ -115,6 +115,23 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+app.get("/me", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ user: req.user });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
+});
+
+app.post("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.clearCookie("connect.sid"); 
+    res.status(200).json({ message: "Logged out successfully" });
+  });
+});
+
+
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);
 });

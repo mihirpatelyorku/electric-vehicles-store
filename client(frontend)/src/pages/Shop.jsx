@@ -26,7 +26,6 @@ function Shop() {
   const location = useLocation();
   const navigate = useNavigate();
 
- 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const hotDealParam = params.get("hot_deal");
@@ -55,7 +54,6 @@ function Shop() {
     setSortMileage(mileageSort ? `mileage_${mileageSort}` : "");
   }, [location.search]);
 
-
   useEffect(() => {
     const fetchFilters = async () => {
       try {
@@ -74,7 +72,6 @@ function Shop() {
 
     fetchFilters();
   }, []);
-
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -98,8 +95,7 @@ function Shop() {
     }
 
     navigate(`?${params.toString().replace(/%2C/g, ",")}`, { replace: true });
-  }, [sortPrice, sortMileage, selectedFilters,navigate]);
-
+  }, [sortPrice, sortMileage, selectedFilters, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -163,23 +159,26 @@ function Shop() {
       <div className="m-4 p-4 border rounded w-full md:w-1/5 self-start overflow-y-auto max-h-screen sticky top-0">
         <div className="mb-4">
           <h5 className="font-semibold capitalize">Price</h5>
-          <label className="mr-4 d-block">
+          <label className="d-block">
             <input
               type="radio"
               name="sortPrice"
               value="price_asc"
               checked={sortPrice === "price_asc"}
               onChange={handlePriceSort}
-            /> Low to High
+            />
+            <span className="ml-3">Low to High</span>
           </label>
-          <label className="mr-4 d-block">
+
+          <label className="d-block">
             <input
               type="radio"
               name="sortPrice"
               value="price_desc"
               checked={sortPrice === "price_desc"}
               onChange={handlePriceSort}
-            /> High to Low
+            />{" "}
+            <span className="ml-2">High to Low</span>
           </label>
           <label>
             <input
@@ -188,7 +187,8 @@ function Shop() {
               value=""
               checked={sortPrice === ""}
               onChange={handlePriceSort}
-            /> Auto
+            />{" "}
+            <span className="ml-2">Auto</span>
           </label>
         </div>
         <div className="mb-4">
@@ -200,7 +200,8 @@ function Shop() {
               value="mileage_asc"
               checked={sortMileage === "mileage_asc"}
               onChange={handleMileageSort}
-            /> Low to High
+            />{" "}
+           <span className="ml-2">Low to High</span>
           </label>
           <label className="mr-4 d-block">
             <input
@@ -209,7 +210,8 @@ function Shop() {
               value="mileage_desc"
               checked={sortMileage === "mileage_desc"}
               onChange={handleMileageSort}
-            /> High to Low
+            />{" "}
+         <span className="ml-2">High to Low</span>
           </label>
           <label>
             <input
@@ -218,7 +220,8 @@ function Shop() {
               value=""
               checked={sortMileage === ""}
               onChange={handleMileageSort}
-            /> Auto
+            />{" "}
+           <span className="ml-2">Auto</span>
           </label>
         </div>
 
