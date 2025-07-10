@@ -2,7 +2,6 @@ const { Client } = require("pg");
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-
 const usersTable = `CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     email VARCHAR(55) NOT NULL UNIQUE,
@@ -10,10 +9,9 @@ const usersTable = `CREATE TABLE IF NOT EXISTS users(
     firstName VARCHAR(55) NOT NULL,
     lastName VARCHAR(55) NOT NULL,
     mobile VARCHAR(15) NOT NULL
-);`
+);`;
 
-
-const vehicleTable=`CREATE TABLE IF NOT EXISTS vehicles(
+const vehicleTable = `CREATE TABLE IF NOT EXISTS vehicles(
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(100) NOT NULL,
     brand VARCHAR(50) NOT NULL,
@@ -34,8 +32,43 @@ const vehicleTable=`CREATE TABLE IF NOT EXISTS vehicles(
     quantity INT NOT NULL CHECK (quantity >= 0),
     is_hot_deal BOOLEAN DEFAULT FALSE        
 );
-`
-const dummyDataVehicles=`INSERT INTO vehicles (
+`;
+
+const cartsTable = `
+CREATE TABLE IF NOT EXISTS carts (
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INTEGER REFERENCES users(id) UNIQUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);`;
+
+const cartItemsTable = `
+CREATE TABLE IF NOT EXISTS cart_items (
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  cart_id INTEGER REFERENCES carts(id) ON DELETE CASCADE,
+  vehicle_id INTEGER REFERENCES vehicles(id),
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  UNIQUE(cart_id, vehicle_id)
+);`;
+
+const ordersTable = `
+CREATE TABLE IF NOT EXISTS orders (
+   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INTEGER REFERENCES users(id),
+  total_amount NUMERIC(10, 2),
+  created_at TIMESTAMP DEFAULT NOW()
+);`;
+
+const orderItemsTable = `
+CREATE TABLE IF NOT EXISTS order_items (
+   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
+  vehicle_id INTEGER REFERENCES vehicles(id),
+  vehicle_name TEXT,
+  price_at_purchase NUMERIC(10, 2),
+  quantity INTEGER NOT NULL CHECK (quantity > 0)
+);`;
+
+const dummyDataVehicles = `INSERT INTO vehicles (
     name, brand, model, model_year, vehicle_type, price, discount_price, mileage, is_used,
     description, exterior_color, interior_color, interior_material,
     accident_history, history_report, image_url, quantity, is_hot_deal
@@ -279,7 +312,7 @@ const dummyDataVehicles=`INSERT INTO vehicles (
  'White', 'Beige', 'Fabric', FALSE,
  'No accidents reported.',
  'https://images.pexels.com/photos/32125148/pexels-photo-32125148.jpeg', 6, FALSE);
-`
+`;
 
 async function main() {
   const client = new Client({
@@ -289,15 +322,18 @@ async function main() {
     console.log("Using DB URL:", process.env.DATABASE_URL);
 
     await client.connect();
-    const res = await client.query('SELECT current_database()');
-console.log('Connected to database:', res.rows[0].current_database);
+    const res = await client.query("SELECT current_database()");
+    console.log("Connected to database:", res.rows[0].current_database);
 
-    await client.query(usersTable);
     await client.query(vehicleTable);
+    await client.query(cartsTable);
+    await client.query(cartItemsTable);
+    await client.query(ordersTable);
+    await client.query(orderItemsTable);
     await client.query(dummyDataVehicles);
     console.log("tables created successfully");
   } catch (error) {
-    console.log("error",error);
+    console.log("error", error);
   } finally {
     await client.end();
   }

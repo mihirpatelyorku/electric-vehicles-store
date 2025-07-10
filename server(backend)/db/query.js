@@ -96,8 +96,6 @@ async function getVehicles({
 }
 
 
-
-
 async function getDistinct() {
   try {
     const brands= await pool.query("SELECT DISTINCT brand FROM vehicles ORDER BY brand")
@@ -114,13 +112,41 @@ async function getDistinct() {
   }
 }
 
+async function getCartID(user_id) {
+  try {
+    const {rows}=await pool.query(`SELECT * FROM carts WHERE user_id=$1`,[user_id])
+    if(rows.length>0){
+      return rows[0].id
+    }
+    const newCart=await pool.query(`INSERT INTO carts(user_id) VALUES($1)`,[user_id])
+    return newCart.rows[0].id
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function insertCartItems(cart_id, vehicle_id) {
+  try {
+    await pool.query(
+      `INSERT INTO cart_items (cart_id, vehicle_id, quantity) VALUES ($1, $2, $3)
+       ON CONFLICT (cart_id, vehicle_id) DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity`,
+      [cart_id, vehicle_id, 1]
+    );
+  } catch (error) {
+    console.error("insertCartItems error:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   registerUser,
   getUserByEmail,
   getUserById,
   getVehicles,
   getDistinct,
-  getVehicleById
+  getVehicleById,
+  getCartID,
+  insertCartItems
 };
 
 

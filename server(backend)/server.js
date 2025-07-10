@@ -127,6 +127,19 @@ app.post("/logout", (req, res, next) => {
   });
 });
 
+app.post("/cart",async(req,res)=>{
+  const {user_id,vehicle_id}=req.body
+  
+  try {
+    const cart_id=await db.getCartID(user_id)
+    await db.insertCartItems(cart_id,vehicle_id)
+
+    res.status(200).json(cart_id)
+  } catch (error) {
+    console.error(error);
+     res.status(500).json({ error: "Failed to add in cart" });
+  }
+})
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);
