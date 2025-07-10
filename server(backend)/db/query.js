@@ -138,6 +138,17 @@ async function insertCartItems(cart_id, vehicle_id) {
   }
 }
 
+async function getCartItems(cart_id) {
+  try {
+    const { rows } = await pool.query(`SELECT ci.quantity,v.* FROM cart_items ci JOIN vehicles v ON ci.vehicle_id=v.id WHERE cart_id = $1`, [cart_id]);
+    return rows;
+  } catch (error) {
+    console.error("getCartItems error", error);
+    throw error;
+  }
+}
+
+
 module.exports = {
   registerUser,
   getUserByEmail,
@@ -146,7 +157,8 @@ module.exports = {
   getDistinct,
   getVehicleById,
   getCartID,
-  insertCartItems
+  insertCartItems,
+  getCartItems
 };
 
 

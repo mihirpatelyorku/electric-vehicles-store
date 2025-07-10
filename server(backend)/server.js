@@ -9,8 +9,8 @@ const passport = require("passport");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 
-const {initialize}=require("./passport-config")
-initialize(passport)
+const { initialize } = require("./passport-config");
+initialize(passport);
 
 app.use(
   cors({
@@ -29,16 +29,28 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false,          
+      sameSite: "lax",        
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   })
 );
-app.use(passport.initialize())
+app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get("/cars",async(req,res)=>{
+app.get("/cars", async (req, res) => {
   try {
-    
-    const {price,mileage,brands,shape,modelYears,accidentHistory,hot_deal}=req.query
+    const {
+      price,
+      mileage,
+      brands,
+      shape,
+      modelYears,
+      accidentHistory,
+      hot_deal,
+    } = req.query;
 
     const parsedFilters = {
       price,
@@ -47,46 +59,49 @@ app.get("/cars",async(req,res)=>{
       shape: shape ? shape.split(",") : [],
       modelYears: modelYears ? modelYears.split(",") : [],
       accidentHistory: accidentHistory ? accidentHistory.split(",") : [],
-      hot_deal: hot_deal === "true", 
+      hot_deal: hot_deal === "true",
     };
-    
-    const data=await db.getVehicles({...parsedFilters})
-    
-    res.status(200).json(data)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({message:"Failed to fetch data"})
-  }
-})
 
-app.get("/cars/:id", async(req, res) => {
-  try {
-    const {id} = req.params;
-    const vehicle = await db.getVehicleById(id);
-    if(!vehicle) return res.status(404).json({message : "Not Found / Not in the Database"});
-    res.status(200).json(vehicle);
-  } catch (err){
-    console.error(err);
-    res.status(500).json({message: "Falied to fetch vehicle!"})
+    const data = await db.getVehicles({ ...parsedFilters });
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch data" });
   }
 });
 
-app.get("/filters",async(req,res)=>{
+app.get("/cars/:id", async (req, res) => {
   try {
-    const filteredData = await db.getDistinct()
-    res.status(200).json(filteredData)
+    const { id } = req.params;
+    const vehicle = await db.getVehicleById(id);
+    if (!vehicle)
+      return res
+        .status(404)
+        .json({ message: "Not Found / Not in the Database" });
+    res.status(200).json(vehicle);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Falied to fetch vehicle!" });
+  }
+});
+
+app.get("/filters", async (req, res) => {
+  try {
+    const filteredData = await db.getDistinct();
+    res.status(200).json(filteredData);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ error: "Failed to fetch filters" });
   }
-})
+});
 
 app.post("/register", async (req, res) => {
   const { email, password, firstname, lastname, mobile } = req.body;
   try {
-const userExists = await db.getUserByEmail(email);
-if (userExists) {
-      return res.status(409).json({ error: "Email already in use" }); 
+    const userExists = await db.getUserByEmail(email);
+    if (userExists) {
+      return res.status(409).json({ error: "Email already in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -112,34 +127,53 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/me", (req, res) => {
+    console.log("req.isAuthenticated():", req.isAuthenticated());
+  console.log("req.user:", req.user);
+  console.log("req.session:", req.session);
   if (req.isAuthenticated()) {
     res.status(200).json({ user: req.user });
   } else {
-    res.status(401).json({ message: "Not authenticated" });
+    res.status(200).json({ user:null });
   }
 });
+
 
 app.post("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
-    res.clearCookie("connect.sid"); 
+    res.clearCookie("connect.sid");
     res.status(200).json({ message: "Logged out successfully" });
   });
 });
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  return res.status(401).json({ message: "Unauthorized" });
+}
 
-app.post("/cart",async(req,res)=>{
-  const {user_id,vehicle_id}=req.body
-  
+app.get("/cart", isAuthenticated, async (req, res) => {
   try {
-    const cart_id=await db.getCartID(user_id)
-    await db.insertCartItems(cart_id,vehicle_id)
-
-    res.status(200).json(cart_id)
+    const cart_id = await db.getCartID(req.user.id);
+    const cartItems = await db.getCartItems(cart_id);
+    console.log(cartItems);
+    
+    res.status(200).json(cartItems);
   } catch (error) {
     console.error(error);
-     res.status(500).json({ error: "Failed to add in cart" });
+    res.status(500).json({ error: "Failed to fetch cart items" });
   }
-})
+});
+
+app.post("/cart", isAuthenticated, async (req, res) => {
+  const { vehicle_id } = req.body;
+  try {
+    const cart_id = await db.getCartID(req.user.id);
+    await db.insertCartItems(cart_id, vehicle_id);
+    res.status(200).json({ message: "Item added to cart" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to add in cart" });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);

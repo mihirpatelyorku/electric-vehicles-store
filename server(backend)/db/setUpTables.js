@@ -324,7 +324,7 @@ async function main() {
     await client.connect();
     const res = await client.query("SELECT current_database()");
     console.log("Connected to database:", res.rows[0].current_database);
-
+    await client.query(usersTable);
     await client.query(vehicleTable);
     await client.query(cartsTable);
     await client.query(cartItemsTable);
