@@ -1,28 +1,64 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-
-
+import UseAuth from "../contexts/UseAuth";
 function CarList({ data }) {
+  const { user } = UseAuth();
+
+  const handleAddToCart = async (id) => {
+    if (!user) {
+      alert("Please log in to add items to cart");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          vehicle_id: id,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert("Failed to add item");
+      } else {
+        alert("Item added to cart!");
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6 my-2 py-2">
       {data.map((item) => (
-        <div key={item.id}>
-          <Link
-            to={`/cars/${item.id}`}
-            className="block no-underline text-black border rounded-2xl shadow-sm hover:bg-red transition h-100 overflow-hidden"
-          >
-            <div className="space-y-2 overflow-hidden text-ellipsis ">
+        <div
+          key={item.id}
+          className="border rounded-2xl shadow-sm hover:bg-red transition overflow-hidden"
+        >
+          <div className="space-y-2 overflow-hidden text-ellipsis">
+            <Link
+              to={`/cars/${item.id}`}
+              className="block no-underline text-black"
+            >
               <div className="relative">
-              <img
-                src={item.image_url}
-                alt=""
-                className="object-fit-cover w-full h-40"
-              />
-              {item.is_hot_deal ? (<p className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow">SALE</p>) : (<></>)}
+                <img
+                  src={item.image_url}
+                  alt=""
+                  className="object-fit-cover w-full h-40"
+                />
+                {item.is_hot_deal && (
+                  <p className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow">
+                    SALE
+                  </p>
+                )}
               </div>
 
               <div className="p-2">
-                {" "}
                 <p className="truncate">
                   <strong>
                     {item.model_year} {item.name} | {item.model}
@@ -31,15 +67,21 @@ function CarList({ data }) {
                 <p className="truncate">
                   {item.vehicle_type} | {item.brand} | {item.description}
                 </p>
-                <p className="truncate text-lg font-bold border-t-1 my-3 py-2">
+                <p className="truncate text-lg font-bold border-t-1 mt-3 pt-2">
                   ${Math.floor(item.price)}
                 </p>
-               <button className="mb-2 p-1 rounded w-full bg-amber-300 hover:bg-amber-400">Add to Cart</button>
               </div>
+            </Link>
+
+            <div className="px-2 pb-2 m-1">
+              <button
+                className="p-1 rounded w-full bg-amber-300 hover:bg-amber-400"
+                onClick={() => handleAddToCart(item.id)}
+              >
+                Add to Cart
+              </button>
             </div>
-                 
-          </Link>
-          
+          </div>
         </div>
       ))}
     </div>
