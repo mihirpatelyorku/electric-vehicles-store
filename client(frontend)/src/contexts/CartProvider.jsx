@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import CartContext from "./CartContext";
+import UseAuth from "./UseAuth"
 function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const {user}=UseAuth()
   const fetchCart = useCallback(async () => {
     setLoading(true);
     try {
@@ -21,10 +22,15 @@ function CartProvider({ children }) {
       setLoading(false);
     }
   }, []);
+  const clearCart = () => {
+    setCart([]); 
+  };
 
-  useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+useEffect(() => {
+  if (!user?.id) return;
+  fetchCart();
+}, [fetchCart, user?.id]);
+
 
   const updateQuantity = async (itemId, quantity) => {
     try {
@@ -84,7 +90,7 @@ function CartProvider({ children }) {
   
   return (
     <CartContext.Provider
-      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart,totalPrice }}
+      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart,totalPrice,clearCart }}
     >
       {children}
     </CartContext.Provider>

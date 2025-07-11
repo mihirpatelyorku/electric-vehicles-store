@@ -15,14 +15,14 @@ async function getUserByEmail(email) {
 }
 
 async function getUserById(id) {
-      const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
-        id,
-      ]);
+  const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
   return rows[0];
 }
 
-async function getVehicleById(id){
-  const {rows} = await pool.query("SELECT * FROM vehicles WHERE id = $1", [id]);
+async function getVehicleById(id) {
+  const { rows } = await pool.query("SELECT * FROM vehicles WHERE id = $1", [
+    id,
+  ]);
   console.log("Vehicle row:", rows[0]);
   return rows[0];
 }
@@ -34,16 +34,17 @@ async function getVehicles({
   shape = [],
   modelYears = [],
   accidentHistory = [],
-  hot_deal=false
+  hot_deal = false,
 } = {}) {
+  const normalizedAccidentHistory = accidentHistory
+    .map((s) => {
+      const lower = s.toLowerCase().trim();
+      if (lower === "with accidents") return true;
+      if (lower === "without accidents") return false;
 
-  const normalizedAccidentHistory = accidentHistory.map((s) => {
-    const lower = s.toLowerCase().trim();
-    if (lower === "with accidents") return true;
-    if (lower === "without accidents") return false;
- 
-    return null; 
-  }).filter((v) => v !== null);
+      return null;
+    })
+    .filter((v) => v !== null);
 
   let query = `SELECT * FROM vehicles`;
   const queryParts = [];
@@ -69,9 +70,9 @@ async function getVehicles({
     queryParts.push(`accident_history = ANY($${values.length})`);
   }
 
-  if(hot_deal){
-    values.push(true)
-    queryParts.push(`is_hot_deal = $${values.length}`)
+  if (hot_deal) {
+    values.push(true);
+    queryParts.push(`is_hot_deal = $${values.length}`);
   }
 
   if (queryParts.length > 0) {
@@ -90,22 +91,26 @@ async function getVehicles({
     query += ` ORDER BY ${orderClause.join(", ")}`;
   }
 
-
   const { rows } = await pool.query(query, values);
   return rows;
 }
 
-
 async function getDistinct() {
   try {
-    const brands= await pool.query("SELECT DISTINCT brand FROM vehicles ORDER BY brand")
-    const modelYears= await pool.query("SELECT DISTINCT model_year FROM vehicles ORDER BY model_year DESC")
-    const shape = await pool.query("SELECT DISTINCT vehicle_type FROM vehicles ORDER BY vehicle_type")
+    const brands = await pool.query(
+      "SELECT DISTINCT brand FROM vehicles ORDER BY brand"
+    );
+    const modelYears = await pool.query(
+      "SELECT DISTINCT model_year FROM vehicles ORDER BY model_year DESC"
+    );
+    const shape = await pool.query(
+      "SELECT DISTINCT vehicle_type FROM vehicles ORDER BY vehicle_type"
+    );
     return {
-      brands: brands.rows.map(item=>item.brand),
-      modelYears: modelYears.rows.map(item=>item.model_year),
-      shape: shape.rows.map(item=>item.vehicle_type),
-      accidentHistory: ["With Accidents","Without Accidents"]
+      brands: brands.rows.map((item) => item.brand),
+      modelYears: modelYears.rows.map((item) => item.model_year),
+      shape: shape.rows.map((item) => item.vehicle_type),
+      accidentHistory: ["With Accidents", "Without Accidents"],
     };
   } catch (err) {
     console.error("Error in getDistinct:", err);
@@ -114,12 +119,16 @@ async function getDistinct() {
 
 async function getCartID(user_id) {
   try {
-    const {rows}=await pool.query(`SELECT * FROM carts WHERE user_id=$1`,[user_id])
-    if(rows.length>0){
-      return rows[0].id
+    const { rows } = await pool.query(`SELECT * FROM carts WHERE user_id=$1`, [
+      user_id,
+    ]);
+    if (rows.length > 0) {
+      return rows[0].id;
     }
-    const newCart=await pool.query(`INSERT INTO carts(user_id) VALUES($1)`,[user_id])
-    return newCart.rows[0].id
+    const newCart = await pool.query(`INSERT INTO carts(user_id) VALUES($1)`, [
+      user_id,
+    ]);
+    return newCart.rows[0].id;
   } catch (error) {
     console.error(error);
   }
@@ -140,7 +149,10 @@ async function insertCartItems(cart_id, vehicle_id) {
 
 async function getCartItems(cart_id) {
   try {
-    const { rows } = await pool.query(`SELECT ci.id,ci.vehicle_id,ci.quantity,v.name,v.price FROM cart_items ci JOIN vehicles v ON ci.vehicle_id=v.id WHERE cart_id = $1`, [cart_id]);
+    const { rows } = await pool.query(
+      `SELECT ci.id,ci.vehicle_id,ci.quantity,v.name,v.price FROM cart_items ci JOIN vehicles v ON ci.vehicle_id=v.id WHERE cart_id = $1`,
+      [cart_id]
+    );
     return rows;
   } catch (error) {
     console.error("getCartItems error", error);
@@ -148,13 +160,16 @@ async function getCartItems(cart_id) {
   }
 }
 
-async function updateQuantity(cart_id,vehicle_id,quantity) {
+async function updateQuantity(cart_id, vehicle_id, quantity) {
   try {
-    const result=await pool.query(`UPDATE cart_items SET quantity=$1 WHERE cart_id=$2 AND vehicle_id=$3`,[quantity,cart_id,vehicle_id])
-    return result.rows[0]
+    const result = await pool.query(
+      `UPDATE cart_items SET quantity=$1 WHERE cart_id=$2 AND vehicle_id=$3`,
+      [quantity, cart_id, vehicle_id]
+    );
+    return result.rows[0];
   } catch (error) {
     console.error(error);
-    throw error
+    throw error;
   }
 }
 async function removeItemFromCart(cart_id, vehicle_id) {
@@ -164,6 +179,55 @@ async function removeItemFromCart(cart_id, vehicle_id) {
   );
 }
 
+async function addOrder({
+  firstName,
+  lastName,
+  street,
+  city,
+  province,
+  postal,
+  cardLast4,
+  cartItems,
+  totalPrice,
+  userId,
+}) {
+  try {
+    const orderResult = await pool.query(
+      `INSERT INTO orders (
+        user_id, first_name, last_name, street, city,
+        province, postal_code, card_last_4, total_amount
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+      [
+        userId,
+        firstName,
+        lastName,
+        street,
+        city,
+        province,
+        postal,
+        cardLast4,
+        totalPrice,
+      ]
+    );
+
+    const orderId = orderResult.rows[0].id;
+
+    for (const item of cartItems) {
+      await pool.query(
+        `INSERT INTO order_items (
+          order_id, vehicle_id, vehicle_name, price_at_purchase, quantity
+        ) VALUES ($1,$2,$3,$4,$5)`,
+        [orderId, item.vehicle_id, item.name, item.price, item.quantity]
+      );
+    }
+    const cartId = await getCartID(userId);
+await pool.query("DELETE FROM cart_items WHERE cart_id = $1", [cartId]);
+
+    return orderId
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports = {
   registerUser,
@@ -176,7 +240,6 @@ module.exports = {
   insertCartItems,
   getCartItems,
   updateQuantity,
-  removeItemFromCart
+  removeItemFromCart,
+  addOrder
 };
-
-

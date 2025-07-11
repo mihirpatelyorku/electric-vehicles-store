@@ -52,11 +52,19 @@ CREATE TABLE IF NOT EXISTS cart_items (
 
 const ordersTable = `
 CREATE TABLE IF NOT EXISTS orders (
-   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INTEGER REFERENCES users(id),
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  street TEXT NOT NULL,
+  city TEXT NOT NULL,
+  province TEXT NOT NULL,
+  postal_code TEXT NOT NULL,
+  card_last_4 VARCHAR(4),
   total_amount NUMERIC(10, 2),
   created_at TIMESTAMP DEFAULT NOW()
-);`;
+);
+`;
 
 const orderItemsTable = `
 CREATE TABLE IF NOT EXISTS order_items (

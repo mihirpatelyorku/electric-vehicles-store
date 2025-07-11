@@ -17,7 +17,7 @@ function NavbarEle() {
 const quantity=cart.reduce((sum,curr)=>{
   return sum+curr.quantity
 },0)
-console.log(quantity);
+
 
   return (
     <>

@@ -9,7 +9,6 @@ function Cart() {
     return <p className="m-5 text-center">Your cart is empty</p>;
 
 
-
   return (
     <div className="flex h-auto items-center m-4">
       <div>

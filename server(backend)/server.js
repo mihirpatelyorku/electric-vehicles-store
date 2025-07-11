@@ -15,7 +15,7 @@ initialize(passport);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type"],
     credentials: true,
   })
@@ -167,8 +167,7 @@ app.post("/cart", isAuthenticated, async (req, res) => {
   try {
     const cart_id = await db.getCartID(req.user.id);
     await db.insertCartItems(cart_id, vehicle_id);
-  
-    
+
     res.status(200).json({ message: "Item added to cart" });
   } catch (error) {
     console.error(error);
@@ -176,14 +175,14 @@ app.post("/cart", isAuthenticated, async (req, res) => {
   }
 });
 
-app.patch("/cart/:id",isAuthenticated, async (req, res) => {
+app.patch("/cart/:id", isAuthenticated, async (req, res) => {
   try {
-    const vehicle_id  = req.params.id;
+    const vehicle_id = req.params.id;
     const cart_id = await db.getCartID(req.user.id);
-    const {quantity}=req.body
+    const { quantity } = req.body;
     console.log("cart_id:", cart_id, "vehicle_id:", vehicle_id);
 
-    const updatedItem = await db.updateQuantity(cart_id, vehicle_id,quantity);
+    const updatedItem = await db.updateQuantity(cart_id, vehicle_id, quantity);
     res.status(200).json({ message: "Quantity updated", updatedItem });
   } catch (error) {
     console.error(error);
@@ -191,7 +190,7 @@ app.patch("/cart/:id",isAuthenticated, async (req, res) => {
   }
 });
 
-app.delete("/cart/:id",isAuthenticated, async (req, res) => {
+app.delete("/cart/:id", isAuthenticated, async (req, res) => {
   try {
     const vehicle_id = req.params.id;
     const cart_id = await db.getCartID(req.user.id);
@@ -208,6 +207,57 @@ app.delete("/cart/:id",isAuthenticated, async (req, res) => {
   }
 });
 
+app.post("/check-out", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    street,
+    city,
+    province,
+    postal,
+    cardNumber,
+    cartItems,
+    totalPrice,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !street ||
+    !city ||
+    !province ||
+    !postal ||
+    !cardNumber ||
+    !cartItems?.length ||
+    !totalPrice
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const cardLast4 = cardNumber.slice(-4);
+  try {
+    const userId=req.user.id
+    const addOrder = await db.addOrder({
+      userId,
+      firstName,
+      lastName,
+      street,
+      city,
+      province,
+      postal,
+      cardLast4,
+      cartItems,
+      totalPrice,
+      
+    });
+    console.log(addOrder);
+    
+    res.status(201).json({ message: "Order placed successfully", addOrder });
+  } catch (err) {
+    console.error("Checkout error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);
