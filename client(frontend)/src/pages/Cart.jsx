@@ -10,12 +10,17 @@ function Cart() {
 
 
   return (
-    <div className="flex h-auto items-center m-4">
+    <div className="flex m-4">
       <div>
         {cart.map((item) => (
           <div key={item.id} className="mx-12 my-2 p-2">
-            <div className="m-2 flex gap-3 items-center">
-              <p className="font-bold">{item.name} </p>
+            <div className="flex gap-2">
+              <div>
+                <img src={item.image_url} alt="" className="h-32 w-32 object-cover rounded-md shadow hover:scale-105 transition duration-200 ease-in-out"
+/>
+              </div>
+              <div className="m-2 flex gap-3 items-center">
+              <p className="font-bold">{item.model_year} {item.name} | {item.vehicle_type} </p>
               <button
                 className="text-green-700 border !rounded-full w-5 h-5 flex items-center justify-center !text-lg"
                 onClick={() =>
@@ -47,10 +52,11 @@ function Cart() {
                 ${(item.price * item.quantity).toFixed(2)}
               </p>
             </div>
+            </div>
           </div>
         ))}
       </div>
-      <div className="p-4 ml-auto mr-20 mt-5 flex h-auto items-center justify-center flex-col fs-2 text-center border rounded">
+      <div className="p-4 ml-auto mr-20 mt-5 flex h-64 items-center justify-center flex-col fs-2 text-center border rounded">
         <p className="font-bold">Total Price</p>
         <p>$ {totalPrice.toFixed(2)}</p>
        <Link to="/check-out"> <button className="border py-1 px-4 fs-5 m-4 rounded bg-green-700 hover:bg-green-600 text-white">Check out</button></Link>
