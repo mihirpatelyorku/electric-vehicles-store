@@ -15,7 +15,7 @@ initialize(passport);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type"],
     credentials: true,
   })
@@ -31,8 +31,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,          
-      sameSite: "lax",        
+      secure: false,
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
@@ -127,16 +127,12 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/me", (req, res) => {
-    console.log("req.isAuthenticated():", req.isAuthenticated());
-  console.log("req.user:", req.user);
-  console.log("req.session:", req.session);
   if (req.isAuthenticated()) {
     res.status(200).json({ user: req.user });
   } else {
-    res.status(200).json({ user:null });
+    res.status(200).json({ user: null });
   }
 });
-
 
 app.post("/logout", (req, res, next) => {
   req.logout((err) => {
@@ -146,8 +142,11 @@ app.post("/logout", (req, res, next) => {
   });
 });
 function isAuthenticated(req, res, next) {
+  console.log("req.isAuthenticated():", req.isAuthenticated());
+  console.log("req.user:", req.user);
+  console.log("req.session:", req.session);
   if (req.isAuthenticated()) return next();
-  return res.status(401).json({ message: "Unauthorized" });
+  return res.status(200).json({ message: "Unauthorized" });
 }
 
 app.get("/cart", isAuthenticated, async (req, res) => {
@@ -155,7 +154,7 @@ app.get("/cart", isAuthenticated, async (req, res) => {
     const cart_id = await db.getCartID(req.user.id);
     const cartItems = await db.getCartItems(cart_id);
     console.log(cartItems);
-    
+
     res.status(200).json(cartItems);
   } catch (error) {
     console.error(error);
@@ -168,12 +167,47 @@ app.post("/cart", isAuthenticated, async (req, res) => {
   try {
     const cart_id = await db.getCartID(req.user.id);
     await db.insertCartItems(cart_id, vehicle_id);
+  
+    
     res.status(200).json({ message: "Item added to cart" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to add in cart" });
   }
 });
+
+app.patch("/cart/:id",isAuthenticated, async (req, res) => {
+  try {
+    const vehicle_id  = req.params.id;
+    const cart_id = await db.getCartID(req.user.id);
+    const {quantity}=req.body
+    console.log("cart_id:", cart_id, "vehicle_id:", vehicle_id);
+
+    const updatedItem = await db.updateQuantity(cart_id, vehicle_id,quantity);
+    res.status(200).json({ message: "Quantity updated", updatedItem });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update quantity" });
+  }
+});
+
+app.delete("/cart/:id",isAuthenticated, async (req, res) => {
+  try {
+    const vehicle_id = req.params.id;
+    const cart_id = await db.getCartID(req.user.id);
+
+    const deleted = await db.removeItemFromCart(cart_id, vehicle_id);
+    if (deleted.rowCount === 0) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    res.status(200).json({ message: "Item removed" });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    res.status(500).json({ error: "Failed to delete item" });
+  }
+});
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);

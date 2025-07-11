@@ -9,10 +9,11 @@ function CarList({ data }) {
       alert("Please log in to add items to cart");
       return;
     }
-
+    
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
         method: "POST",
+        credentials:'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -20,13 +21,13 @@ function CarList({ data }) {
           user_id: user.id,
           vehicle_id: id,
         }),
+        
       });
-      const data = await res.json();
       if (!res.ok) {
         alert("Failed to add item");
       } else {
         alert("Item added to cart!");
-        console.log(data);
+       
       }
     } catch (error) {
       console.error(error);
