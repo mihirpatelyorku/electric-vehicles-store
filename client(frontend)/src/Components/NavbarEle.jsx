@@ -1,9 +1,10 @@
 import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link,useNavigate } from "react-router-dom";
 import UseAuth from "../contexts/UseAuth";
-
+import UseCart from "../contexts/UseCart";
 function NavbarEle() {
   const { user, logout,authChecked} = UseAuth();
+  const {cart}=UseCart()
   const navigate = useNavigate();
   const handleLogOut = async () => {
     await logout();
@@ -13,6 +14,10 @@ function NavbarEle() {
     if (!authChecked) {
     return null; 
   }
+const quantity=cart.reduce((sum,curr)=>{
+  return sum+curr.quantity
+},0)
+console.log(quantity);
 
   return (
     <>
@@ -64,11 +69,12 @@ function NavbarEle() {
               <>
                 <Button
                   variant="outline-secondary"
-                  className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                  className="rounded-pill px-4 py-2 fw-semibold login-btn relative"
                   as={Link}
                   to="/cart"
                 >
                   Cart
+                  {cart.length>0?(<p className="bg-red-500 text-white rounded-full h-4 w-4 text-xs p-2 font-light flex items-center justify-center absolute right-1 bottom-0">{quantity}</p>):(<></>)}
                 </Button>
                 <Button
                   variant="outline-secondary"

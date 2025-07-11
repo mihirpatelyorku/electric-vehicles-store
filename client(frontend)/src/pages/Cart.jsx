@@ -1,17 +1,14 @@
 import UseCart from "../contexts/UseCart";
-
+import { Link } from "react-router-dom";
 function Cart() {
-  const { cart, loading, error, updateQuantity, removeItem } = UseCart();
+  const { cart, loading, error, updateQuantity, removeItem,totalPrice } = UseCart();
 
   if (loading) return <p>Loading cart...</p>;
   if (error) return <p>Error: {error}</p>;
   if (cart.length === 0)
     return <p className="m-5 text-center">Your cart is empty</p>;
 
-  const totalPrice = cart.reduce((sum, curr) => {
-    return sum + parseFloat(curr.price) * curr.quantity;
-  }, 0);
-  console.log(totalPrice.toFixed(2));
+
 
   return (
     <div className="flex h-auto items-center m-4">
@@ -57,9 +54,11 @@ function Cart() {
       <div className="p-4 ml-auto mr-20 mt-5 flex h-auto items-center justify-center flex-col fs-2 text-center border rounded">
         <p className="font-bold">Total Price</p>
         <p>$ {totalPrice.toFixed(2)}</p>
-        <button className="border py-1 px-4 fs-5 m-4 rounded bg-green-700 hover:bg-green-600 text-white">Check out</button>
+       <Link to="/check-out"> <button className="border py-1 px-4 fs-5 m-4 rounded bg-green-700 hover:bg-green-600 text-white">Check out</button></Link>
       </div>
     </div>
   );
 }
 export default Cart;
+
+

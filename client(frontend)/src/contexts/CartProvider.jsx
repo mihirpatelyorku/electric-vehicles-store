@@ -13,7 +13,7 @@ function CartProvider({ children }) {
       });
       if (!res.ok) throw new Error("Failed to fetch cart");
       const data = await res.json();
-      setCart(data);
+      setCart(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -77,11 +77,14 @@ function CartProvider({ children }) {
   }
 };
 
+  const totalPrice = cart.reduce((sum, curr) => {
+    return sum + parseFloat(curr.price) * curr.quantity;
+  }, 0);
 
   
   return (
     <CartContext.Provider
-      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart }}
+      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart,totalPrice }}
     >
       {children}
     </CartContext.Provider>
