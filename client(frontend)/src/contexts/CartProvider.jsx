@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import CartContext from "./CartContext";
 function CartProvider({ children }) {
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -59,11 +59,29 @@ function CartProvider({ children }) {
       setError(err.message);
     }
   };
+  const addToCart = async (vehicle_id, user_id) => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ vehicle_id, user_id }),
+    });
+
+    if (!res.ok) throw new Error("Failed to add item");
+
+   
+    await fetchCart();
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
 
   
   return (
     <CartContext.Provider
-      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart }}
+      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart }}
     >
       {children}
     </CartContext.Provider>

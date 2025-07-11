@@ -1,38 +1,23 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import UseAuth from "../contexts/UseAuth";
+import UseCart from "../contexts/UseCart";
 function CarList({ data }) {
   const { user } = UseAuth();
+  const {addToCart}=UseCart()
+const handleAddToCart = async (id) => {
+  if (!user) {
+    alert("Please log in to add items to cart");
+    return;
+  }
 
-  const handleAddToCart = async (id) => {
-    if (!user) {
-      alert("Please log in to add items to cart");
-      return;
-    }
-    
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
-        method: "POST",
-        credentials:'include',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          vehicle_id: id,
-        }),
-        
-      });
-      if (!res.ok) {
-        alert("Failed to add item");
-      } else {
-        alert("Item added to cart!");
-       
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    await addToCart(id, user.id);
+  } catch (err) {
+    console.error("Error adding to cart", err);
+  }
+};
+
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6 my-2 py-2">
