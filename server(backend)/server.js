@@ -3,6 +3,7 @@ const db = require("./db/query");
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const CarsRouter=require("./routes/CarsRouter")
 const session = require("express-session");
 const passport = require("passport");
 
@@ -40,51 +41,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/cars", async (req, res) => {
-  try {
-    const {
-      price,
-      mileage,
-      brands,
-      shape,
-      modelYears,
-      accidentHistory,
-      hot_deal,
-    } = req.query;
+app.use("/cars",CarsRouter)
 
-    const parsedFilters = {
-      price,
-      mileage,
-      brands: brands ? brands.split(",") : [],
-      shape: shape ? shape.split(",") : [],
-      modelYears: modelYears ? modelYears.split(",") : [],
-      accidentHistory: accidentHistory ? accidentHistory.split(",") : [],
-      hot_deal: hot_deal === "true",
-    };
-
-    const data = await db.getVehicles({ ...parsedFilters });
-
-    res.status(200).json(data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to fetch data" });
-  }
-});
-
-app.get("/cars/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const vehicle = await db.getVehicleById(id);
-    if (!vehicle)
-      return res
-        .status(404)
-        .json({ message: "Not Found / Not in the Database" });
-    res.status(200).json(vehicle);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Falied to fetch vehicle!" });
-  }
-});
 
 app.get("/filters", async (req, res) => {
   try {
