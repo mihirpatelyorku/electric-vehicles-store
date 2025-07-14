@@ -15,6 +15,7 @@ import Admin from "./pages/Admin";
 import SalesReport from "./pages/SalesReport";
 import UsageReport from "./pages/UsageReport";
 import CompareCars from "./pages/CompareCars";
+import ChatBot from "./components/ChatBot"
 function App() {
   return (
     <Router>
@@ -38,6 +39,7 @@ function App() {
 
         </Routes>
       </div>
+      <ChatBot />
       <Footer />
     </Router>
   );
