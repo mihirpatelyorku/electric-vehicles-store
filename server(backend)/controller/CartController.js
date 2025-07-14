@@ -1,6 +1,6 @@
 const db = require("../db/query");
 
-exports.cartGet= async (req, res) => {
+exports.cartGet = async (req, res) => {
   try {
     const cart_id = await db.getCartID(req.user.id);
     const cartItems = await db.getCartItems(cart_id);
@@ -11,22 +11,26 @@ exports.cartGet= async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch cart items" });
   }
-}
+};
 
-exports.cartPost= async (req, res) => {
-  const { vehicle_id } = req.body;
+exports.cartPost = async (req, res) => {
+  const { vehicle_id, customizations = [] } = req.body;
+  const cart_id = await db.getCartID(req.user.id);
   try {
-    const cart_id = await db.getCartID(req.user.id);
-    await db.insertCartItems(cart_id, vehicle_id);
+    const cart_item_id = await db.insertCartItems(cart_id, vehicle_id);
 
-    res.status(200).json({ message: "Item added to cart" });
+    for (const customization_id of customizations) {
+      await db.insertCartItemCustomization(cart_item_id, customization_id);
+    }
+
+    res.status(200).json({ message: "Item added to cart with customizations" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to add in cart" });
+    console.error("cartPost error:", error);
+    res.status(500).json({ error: "Failed to add to cart" });
   }
-}
+};
 
-exports.cartPatch= async (req, res) => {
+exports.cartPatch = async (req, res) => {
   try {
     const vehicle_id = req.params.id;
     const cart_id = await db.getCartID(req.user.id);
@@ -39,9 +43,9 @@ exports.cartPatch= async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Failed to update quantity" });
   }
-}
+};
 
-exports.cartDelete= async (req, res) => {
+exports.cartDelete = async (req, res) => {
   try {
     const vehicle_id = req.params.id;
     const cart_id = await db.getCartID(req.user.id);
@@ -56,9 +60,4 @@ exports.cartDelete= async (req, res) => {
     console.error("Error deleting item:", error);
     res.status(500).json({ error: "Failed to delete item" });
   }
-}
-
-
-
-
-
+};

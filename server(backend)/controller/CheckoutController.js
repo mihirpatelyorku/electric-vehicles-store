@@ -1,5 +1,5 @@
 const db = require("../db/query");
-exports.checkout=async (req, res) => {
+exports.checkout = async (req, res) => {
   const {
     firstName,
     lastName,
@@ -20,33 +20,34 @@ exports.checkout=async (req, res) => {
     !province ||
     !postal ||
     !cardNumber ||
-    !cartItems?.length ||
+    !Array.isArray(cartItems) ||
+    cartItems.length === 0 ||
     !totalPrice
   ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   const cardLast4 = cardNumber.slice(-4);
-  try {
-    const userId=req.user.id
-    const addOrder = await db.addOrder({
-      userId,
-      firstName,
-      lastName,
-      street,
-      city,
-      province,
-      postal,
-      cardLast4,
-      cartItems,
-      totalPrice,
-      
-    });
-    console.log(addOrder);
-    
-    res.status(201).json({ message: "Order placed successfully", addOrder });
-  } catch (err) {
-    console.error("Checkout error:", err);
+  const userId = req.user.id;
+try {
+  
+  const addOrder=await db.addOrder({
+    userId,
+    firstName,
+    lastName,
+    street,
+    city,
+    province,
+    postal,
+    cardLast4,
+    cartItems,
+    totalPrice,
+  })
+res.status(201).json({ message: "Order placed successfully", addOrder });
+} catch (error) {   
+   console.error("Checkout error:", error);
+
     res.status(500).json({ error: "Internal server error" });
-  }
 }
+
+};

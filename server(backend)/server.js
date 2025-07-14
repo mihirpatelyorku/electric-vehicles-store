@@ -6,6 +6,8 @@ const FilterRouter = require("./routes/FilterRouter");
 const CartRouter = require("./routes/CartRouter");
 const AuthRouter = require("./routes/AuthRouter");
 const ReviewRouter=require("./routes/ReviewRouter")
+const CustomizeRouter=require("./routes/CustomizeRouter")
+const CheckoutRouter=require("./routes/CheckoutRouter")
 const session = require("express-session");
 const passport = require("passport");
 
@@ -47,6 +49,8 @@ app.use("/cars", CarsRouter);
 app.use("/filters", FilterRouter);
 app.use("/cart", CartRouter);
 app.use("/reviews",ReviewRouter)
+app.use("/customizations",CustomizeRouter)
+app.use("/check-out",CheckoutRouter)
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);

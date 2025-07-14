@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import CartContext from "./CartContext";
-import UseAuth from "./UseAuth"
+import UseAuth from "./UseAuth";
 function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-const {user}=UseAuth()
+  const { user } = UseAuth();
   const fetchCart = useCallback(async () => {
     setLoading(true);
     try {
@@ -23,14 +23,13 @@ const {user}=UseAuth()
     }
   }, []);
   const clearCart = () => {
-    setCart([]); 
+    setCart([]);
   };
 
-useEffect(() => {
-  if (!user?.id) return;
-  fetchCart();
-}, [fetchCart, user?.id]);
-
+  useEffect(() => {
+    if (!user?.id) return;
+    fetchCart();
+  }, [fetchCart, user?.id]);
 
   const updateQuantity = async (itemId, quantity) => {
     try {
@@ -65,32 +64,43 @@ useEffect(() => {
       setError(err.message);
     }
   };
-  const addToCart = async (vehicle_id, user_id) => {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ vehicle_id, user_id }),
-    });
+  const addToCart = async (vehicle_id, user_id, customizations = []) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicle_id, user_id, customizations }),
+      });
 
-    if (!res.ok) throw new Error("Failed to add item");
+      if (!res.ok) throw new Error("Failed to add item");
 
-   
-    await fetchCart();
-  } catch (err) {
-    setError(err.message);
-  }
-};
+      await fetchCart();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-  const totalPrice = cart.reduce((sum, curr) => {
-    return sum + parseFloat(curr.price) * curr.quantity;
-  }, 0);
+ const totalPrice = cart.reduce((sum, item) => {
+  const basePrice = parseFloat(item.price);
+  const customizationCost = parseFloat(item.customization_cost || 0);
+  return sum + (basePrice + customizationCost) * item.quantity;
+}, 0);
 
-  
+
   return (
     <CartContext.Provider
-      value={{ cart, loading, error, updateQuantity, removeItem, fetchCart,addToCart,totalPrice,clearCart }}
+      value={{
+        cart,
+        loading,
+        error,
+        updateQuantity,
+        removeItem,
+        fetchCart,
+        addToCart,
+        totalPrice,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

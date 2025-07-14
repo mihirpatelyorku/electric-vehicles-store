@@ -181,7 +181,7 @@ const dummyDataVehicles = `INSERT INTO vehicles (
  'Electric compact SUV with stylish design.',
  'Grey', 'Beige', 'Fabric', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/1325641/pexels-photo-1325641.jpeg', 5, FALSE),
+ 'https://images.pexels.com/photos/26224702/pexels-photo-26224702.jpeg', 5, FALSE),
 
 ('Audi e-tron', 'Audi', 'e-tron', 2021, 'SUV', 77280.94, NULL, 17471, TRUE,
  'Premium electric SUV with high-quality interiors.',
@@ -205,13 +205,13 @@ const dummyDataVehicles = `INSERT INTO vehicles (
  'Electric SUV with comfortable interiors and smooth drive.',
  'White', 'Black', 'Leather', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/1325641/pexels-photo-1325641.jpeg', 7, TRUE),
+ 'https://images.pexels.com/photos/20220997/pexels-photo-20220997.jpeg', 7, TRUE),
 
 ('Porsche Macan EV', 'Porsche', 'Macan EV', 2024, 'SUV', 70000.00, NULL, 2000, TRUE,
  'Upcoming electric SUV with sporty handling.',
  'Red', 'Black', 'Leather', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/3955375/pexels-photo-3955375.jpeg', 4, FALSE),
+ 'https://images.pexels.com/photos/30889575/pexels-photo-30889575.jpeg', 4, FALSE),
 
 ('Volkswagen e-Golf', 'Volkswagen', 'e-Golf', 2020, 'Hatchback', 30000.00, NULL, 25000, TRUE,
  'Electric hatchback with smooth city driving.',
@@ -235,19 +235,19 @@ const dummyDataVehicles = `INSERT INTO vehicles (
  'Affordable electric hatchback with efficiency.',
  'Red', 'Black', 'Fabric', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/1179837/pexels-photo-1179837.jpeg', 7, FALSE),
+ 'https://images.pexels.com/photos/6698127/pexels-photo-6698127.jpeg', 7, FALSE),
 
 ('Honda Insight', 'Honda', 'Insight', 2020, 'Sedan', 25000.00, NULL, 20000, TRUE,
  'Hybrid sedan with excellent fuel economy.',
  'Grey', 'Beige', 'Leather', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/3955375/pexels-photo-3955375.jpeg', 5, FALSE),
+ 'https://images.pexels.com/photos/6894420/pexels-photo-6894420.jpeg', 5, FALSE),
 
 ('Ford Mustang Mach-E', 'Ford', 'Mustang Mach-E', 2023, 'SUV', 55000.00, 49999.99, 5000, TRUE,
  'Electric SUV with sporty styling and strong performance.',
  'Blue', 'Black', 'Leather', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/3955375/pexels-photo-3955375.jpeg', 8, TRUE),
+ 'https://images.pexels.com/photos/3065602/pexels-photo-3065602.jpeg', 8, TRUE),
 
 ('Audi Q3 e', 'Audi', 'Q3 e', 2023, 'SUV', 47000.00, 45000.00, 7000, TRUE,
  'Compact luxury electric SUV with advanced safety.',
@@ -271,7 +271,7 @@ const dummyDataVehicles = `INSERT INTO vehicles (
  'Electric version of the popular MX-5 roadster, sporty and fun.',
  'Red', 'Black', 'Fabric', FALSE,
  'No accidents reported.',
- 'https://images.pexels.com/photos/1325641/pexels-photo-1325641.jpeg', 3, FALSE),
+ 'https://images.pexels.com/photos/18926044/pexels-photo-18926044.jpeg', 3, FALSE),
 
 ('BMW X1 EV', 'BMW', 'X1 EV', 2023, 'SUV', 52000.00, 50000.00, 7000, TRUE,
  'Compact electric SUV with premium features.',
@@ -338,6 +338,14 @@ CREATE TABLE IF NOT EXISTS selected_customizations (
 );
 `;
 
+const cartItemCustomizations = `CREATE TABLE IF NOT EXISTS cart_item_customizations (
+  id SERIAL PRIMARY KEY,
+  cart_item_id INTEGER REFERENCES cart_items(id) ON DELETE CASCADE,
+  customization_option_id INTEGER REFERENCES customization_options(id),
+  UNIQUE(cart_item_id, customization_option_id)
+);
+`;
+
 const vehicleReviewsTable = `
 CREATE TABLE IF NOT EXISTS vehicle_reviews (
   id SERIAL PRIMARY KEY,
@@ -381,7 +389,8 @@ async function main() {
     await client.query(customizationOptionsTable);
     await client.query(selectedCustomizationsTable);
     await client.query(vehicleReviewsTable);
-await client.query(dummyCustomizationOptions);
+    await client.query(cartItemCustomizations);
+     await client.query(dummyCustomizationOptions);
     await client.query(dummyDataVehicles);
     console.log("tables created successfully");
   } catch (error) {

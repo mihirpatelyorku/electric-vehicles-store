@@ -9,6 +9,7 @@ function Cart() {
     return <p className="m-5 text-center">Your cart is empty</p>;
 
 
+
   return (
     <div className="flex m-4">
       <div>
@@ -51,6 +52,7 @@ function Cart() {
               <p className="font-bold">
                 ${(item.price * item.quantity).toFixed(2)}
               </p>
+              {item.customization_cost!=0? (<span className="font-bold">(+${item.customization_cost})</span>) :(<></>)}
             </div>
             </div>
           </div>

@@ -136,11 +136,12 @@ async function getCartID(user_id) {
 
 async function insertCartItems(cart_id, vehicle_id) {
   try {
-    await pool.query(
+    const result = await pool.query(
       `INSERT INTO cart_items (cart_id, vehicle_id, quantity) VALUES ($1, $2, $3)
-       ON CONFLICT (cart_id, vehicle_id) DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity`,
+       ON CONFLICT (cart_id, vehicle_id) DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity RETURNING id`,
       [cart_id, vehicle_id, 1]
     );
+    return result.rows[0].id;
   } catch (error) {
     console.error("insertCartItems error:", error);
     throw error;
@@ -150,10 +151,33 @@ async function insertCartItems(cart_id, vehicle_id) {
 async function getCartItems(cart_id) {
   try {
     const { rows } = await pool.query(
-      `SELECT ci.id,ci.vehicle_id,ci.quantity,v.name,v.price,v.image_url,v.model_year,v.vehicle_type FROM cart_items ci JOIN vehicles v ON ci.vehicle_id=v.id WHERE cart_id = $1`,
+      `
+SELECT 
+  ci.id AS id,
+  ci.vehicle_id,
+  ci.quantity,
+  v.name,
+  v.price,
+  v.image_url,
+  v.model_year,
+  v.vehicle_type,
+  COALESCE(SUM(co.additional_cost), 0) AS customization_cost,
+  COALESCE(array_agg(co.id) FILTER (WHERE co.id IS NOT NULL), '{}') AS customization_ids
+FROM cart_items ci
+JOIN vehicles v ON ci.vehicle_id = v.id
+LEFT JOIN cart_item_customizations cic ON ci.id = cic.cart_item_id
+LEFT JOIN customization_options co ON cic.customization_option_id = co.id
+WHERE ci.cart_id = $1
+GROUP BY ci.id, v.id
+
+      `,
       [cart_id]
     );
-    return rows;
+    return rows.map((row) => ({
+      ...row,
+      price: parseFloat(row.price),
+      customization_cost: parseFloat(row.customization_cost),
+    }));
   } catch (error) {
     console.error("getCartItems error", error);
     throw error;
@@ -180,6 +204,7 @@ async function removeItemFromCart(cart_id, vehicle_id) {
 }
 
 async function addOrder({
+  userId,
   firstName,
   lastName,
   street,
@@ -189,14 +214,14 @@ async function addOrder({
   cardLast4,
   cartItems,
   totalPrice,
-  userId,
 }) {
   try {
+    // Insert into orders
     const orderResult = await pool.query(
       `INSERT INTO orders (
-        user_id, first_name, last_name, street, city,
-        province, postal_code, card_last_4, total_amount
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+    user_id, first_name, last_name, street, city, province, postal_code, card_last_4, total_amount
+  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  RETURNING id`,
       [
         userId,
         firstName,
@@ -213,25 +238,49 @@ async function addOrder({
     const orderId = orderResult.rows[0].id;
 
     for (const item of cartItems) {
-      await pool.query(
+      const {
+        vehicle_id,
+        name,
+        price,
+        quantity,
+        customization_ids = [],
+        customization_cost,
+      } = item;
+
+      const total = parseFloat(price) + parseFloat(customization_cost);
+
+      const orderItemResult = await pool.query(
         `INSERT INTO order_items (
           order_id, vehicle_id, vehicle_name, price_at_purchase, quantity
-        ) VALUES ($1,$2,$3,$4,$5)`,
-        [orderId, item.vehicle_id, item.name, item.price, item.quantity]
+        ) VALUES ($1, $2, $3, $4, $5)
+        RETURNING id`,
+        [orderId, vehicle_id, name, total, quantity]
       );
+
+      const orderItemId = orderItemResult.rows[0].id;
+
+      console.log("item",item);
+
+      for (const customizationId of customization_ids) {
+        await pool.query(
+          `INSERT INTO selected_customizations (
+            order_item_id, customization_option_id
+          ) VALUES ($1, $2)`,
+          [orderItemId, customizationId]
+        );
+      }
     }
     const cartId = await getCartID(userId);
 
-await pool.query("DELETE FROM cart_items WHERE cart_id = $1", [cartId]);
-
-    return orderId
-  } catch (error) {
-    console.log(error);
+    await pool.query("DELETE FROM cart_items WHERE cart_id = $1", [cartId]);
+    return orderId;
+  } catch (err) {
+    console.error("Checkout error:", err);
   }
 }
 
-async function insertReview({user_id, vehicleId, rating, review_text}) {
-    try {
+async function insertReview({ user_id, vehicleId, rating, review_text }) {
+  try {
     const result = await pool.query(
       `INSERT INTO vehicle_reviews (user_id, vehicle_id, rating, review_text)
        VALUES ($1, $2, $3, $4)
@@ -240,28 +289,48 @@ async function insertReview({user_id, vehicleId, rating, review_text}) {
        RETURNING *`,
       [user_id, vehicleId, rating, review_text]
     );
-return result.rows[0]
-    
+    return result.rows[0];
   } catch (error) {
     console.error("Error posting review:", error);
-
   }
 }
 
-async function getReview({vehicleId}) {
-      const result = await pool.query(
-      `SELECT r.*, u.firstName, u.lastName
+async function getReview({ vehicleId }) {
+  const result = await pool.query(
+    `SELECT r.*, u.firstName, u.lastName
        FROM vehicle_reviews r
        JOIN users u ON r.user_id = u.id
        WHERE r.vehicle_id = $1
        ORDER BY r.created_at DESC`,
-      [vehicleId]
-    );
+    [vehicleId]
+  );
 
-    return result.rows;
+  return result.rows;
 }
 
+async function getCustomizationOptions() {
+  const result = await pool.query(
+    "SELECT * FROM customization_options ORDER BY id"
+  );
+  return result.rows;
+}
 
+async function insertCartItemCustomization(
+  cart_item_id,
+  customization_option_id
+) {
+  try {
+    await pool.query(
+      `INSERT INTO cart_item_customizations (cart_item_id, customization_option_id)
+       VALUES ($1, $2)
+       ON CONFLICT DO NOTHING`,
+      [cart_item_id, customization_option_id]
+    );
+  } catch (error) {
+    console.error("insertCartItemCustomization error:", error);
+    throw error;
+  }
+}
 
 module.exports = {
   registerUser,
@@ -277,5 +346,7 @@ module.exports = {
   removeItemFromCart,
   addOrder,
   insertReview,
-  getReview
+  getReview,
+  getCustomizationOptions,
+  insertCartItemCustomization,
 };

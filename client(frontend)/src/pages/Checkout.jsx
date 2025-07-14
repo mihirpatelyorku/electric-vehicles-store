@@ -1,8 +1,8 @@
 import UseCart from "../contexts/UseCart";
 import { useState } from "react";
-import{useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 function Checkout() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const { cart, totalPrice, clearCart } = UseCart();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -25,6 +25,8 @@ function Checkout() {
         name: item.name,
         price: item.price,
         quantity: item.quantity,
+        customizations: item.customization_ids || [],
+        customization_cost: item.customization_cost || 0,
       }));
 
       const orderData = {
@@ -56,10 +58,9 @@ function Checkout() {
       if (!response.ok) {
         throw new Error(data.error || "Failed to place order");
       }
-clearCart();
+      clearCart();
       alert("Order placed successfully! ");
-navigate("/")
-      
+      navigate("/");
     } catch (error) {
       console.error("Order placement error:", error);
       alert("Error placing order: " + error.message);
