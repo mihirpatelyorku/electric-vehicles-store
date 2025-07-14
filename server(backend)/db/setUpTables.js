@@ -322,6 +322,46 @@ const dummyDataVehicles = `INSERT INTO vehicles (
  'https://images.pexels.com/photos/32125148/pexels-photo-32125148.jpeg', 6, FALSE);
 `;
 
+const customizationOptionsTable = `
+CREATE TABLE IF NOT EXISTS customization_options (
+  id SERIAL PRIMARY KEY,
+  option_name VARCHAR(100) NOT NULL,
+  additional_cost NUMERIC(10, 2) DEFAULT 0.00
+);
+`;
+
+const selectedCustomizationsTable = `
+CREATE TABLE IF NOT EXISTS selected_customizations (
+  id SERIAL PRIMARY KEY,
+  order_item_id INTEGER REFERENCES order_items(id) ON DELETE CASCADE,
+  customization_option_id INTEGER REFERENCES customization_options(id)
+);
+`;
+
+const vehicleReviewsTable = `
+CREATE TABLE IF NOT EXISTS vehicle_reviews (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  vehicle_id INTEGER REFERENCES vehicles(id) ON DELETE CASCADE,
+  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  review_text TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, vehicle_id)
+);
+`;
+const dummyCustomizationOptions = `
+INSERT INTO customization_options (option_name, additional_cost) VALUES
+  ('Sunroof',  1200.00),
+  ('Premium Sound System',  800.00),
+  ('Sport Wheels',  1500.00),
+  ('All-Weather Floor Mats', 150.00),
+  ('Extended Warranty',  900.00),
+  ('Carbon Fiber Trim',  700.00),
+  ('Roof Rack',  400.00),
+  ('Heated Seats', 500.00)
+ON CONFLICT DO NOTHING;
+`;
+
 async function main() {
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -338,6 +378,10 @@ async function main() {
     await client.query(cartItemsTable);
     await client.query(ordersTable);
     await client.query(orderItemsTable);
+    await client.query(customizationOptionsTable);
+    await client.query(selectedCustomizationsTable);
+    await client.query(vehicleReviewsTable);
+await client.query(dummyCustomizationOptions);
     await client.query(dummyDataVehicles);
     console.log("tables created successfully");
   } catch (error) {
