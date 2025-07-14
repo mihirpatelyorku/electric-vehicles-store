@@ -75,7 +75,7 @@ node --watch server.js
 ### 6. Install Dependencies
 
 ```bash
-cd ../client(frontend)
+cd ../client\(frontend\)/
 npm install
 ```
 
