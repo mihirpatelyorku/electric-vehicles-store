@@ -221,6 +221,7 @@ async function addOrder({
       );
     }
     const cartId = await getCartID(userId);
+
 await pool.query("DELETE FROM cart_items WHERE cart_id = $1", [cartId]);
 
     return orderId
@@ -228,6 +229,39 @@ await pool.query("DELETE FROM cart_items WHERE cart_id = $1", [cartId]);
     console.log(error);
   }
 }
+
+async function insertReview({user_id, vehicleId, rating, review_text}) {
+    try {
+    const result = await pool.query(
+      `INSERT INTO vehicle_reviews (user_id, vehicle_id, rating, review_text)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (user_id, vehicle_id) DO UPDATE
+       SET rating = $3, review_text = $4
+       RETURNING *`,
+      [user_id, vehicleId, rating, review_text]
+    );
+return result.rows[0]
+    
+  } catch (error) {
+    console.error("Error posting review:", error);
+
+  }
+}
+
+async function getReview({vehicleId}) {
+      const result = await pool.query(
+      `SELECT r.*, u.firstName, u.lastName
+       FROM vehicle_reviews r
+       JOIN users u ON r.user_id = u.id
+       WHERE r.vehicle_id = $1
+       ORDER BY r.created_at DESC`,
+      [vehicleId]
+    );
+
+    return result.rows;
+}
+
+
 
 module.exports = {
   registerUser,
@@ -241,5 +275,7 @@ module.exports = {
   getCartItems,
   updateQuantity,
   removeItemFromCart,
-  addOrder
+  addOrder,
+  insertReview,
+  getReview
 };
