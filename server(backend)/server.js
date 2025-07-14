@@ -9,6 +9,7 @@ const AuthRouter = require("./routes/AuthRouter");
 const ReviewRouter=require("./routes/ReviewRouter")
 const CustomizeRouter=require("./routes/CustomizeRouter")
 const CheckoutRouter=require("./routes/CheckoutRouter")
+const AdminRouter=require("./routes/AdminRouter")
 const session = require("express-session");
 const passport = require("passport");
 
@@ -52,26 +53,8 @@ app.use("/cart", CartRouter);
 app.use("/reviews",ReviewRouter)
 app.use("/customizations",CustomizeRouter)
 app.use("/check-out",CheckoutRouter)
+app.use("/",AdminRouter)
 
-app.get("/sales",async(req,res)=>{
-try {
-    const result=await db.getSales()
-  res.status(200).json(result)
-} catch (error) {
-  console.error(error);
-    res.json(500).json("ERROR fetching sales report")
-}
-})
-
-app.get("/usage",async(req,res)=>{
-  try {
-    const result=await db.getUsage()
-    res.status(200).json(result)
-  } catch (error) {
-      console.error(error);
-    res.json(500).json("ERROR fetching usage report")
-  }
-})
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);
