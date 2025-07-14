@@ -36,7 +36,7 @@ cd electric-vehicles-store
 ### 2. Install Dependencies
 
 ```bash
-cd server
+cd server\(backend\)/
 npm install
 ```
 
