@@ -4,7 +4,7 @@ import About from "./pages/About";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Shop from "./pages/Shop";
-import NavbarEle from "./Components/NavbarEle";
+import NavbarEle from "./components/NavbarEle";
 import HowFinancingWorks from "./pages/HowFinancingWorks";
 import CarCalculator from "./pages/CarCalculator";
 import Contact from "./pages/Contact";
@@ -14,6 +14,7 @@ import VehicleDetail from "./pages/VehicleDetail";
 import Admin from "./pages/Admin";
 import SalesReport from "./pages/SalesReport";
 import UsageReport from "./pages/UsageReport";
+import CompareCars from "./pages/CompareCars";
 function App() {
   return (
     <Router>
@@ -33,6 +34,7 @@ function App() {
           <Route path="/admin" element={<Admin />}></Route>
            <Route path="/usage" element={<UsageReport />}></Route> 
            <Route path="/sales" element={<SalesReport />}></Route>
+ <Route path="/compare" element={<CompareCars />}></Route>
 
         </Routes>
       </div>

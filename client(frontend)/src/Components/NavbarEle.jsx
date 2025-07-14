@@ -63,6 +63,10 @@ const quantity=cart.reduce((sum,curr)=>{
                 <NavDropdown.Item as={Link} to="/contact">
                   Contact Us
                 </NavDropdown.Item>
+                      <NavDropdown.Divider />
+                              <NavDropdown.Item as={Link} to="/compare">
+                  Compare Cars
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
             {user ? (
