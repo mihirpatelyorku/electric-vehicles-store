@@ -1,3 +1,4 @@
+const db=require("./db/query")
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -51,6 +52,26 @@ app.use("/cart", CartRouter);
 app.use("/reviews",ReviewRouter)
 app.use("/customizations",CustomizeRouter)
 app.use("/check-out",CheckoutRouter)
+
+app.get("/sales",async(req,res)=>{
+try {
+    const result=await db.getSales()
+  res.status(200).json(result)
+} catch (error) {
+  console.error(error);
+    res.json(500).json("ERROR fetching sales report")
+}
+})
+
+app.get("/usage",async(req,res)=>{
+  try {
+    const result=await db.getUsage()
+    res.status(200).json(result)
+  } catch (error) {
+      console.error(error);
+    res.json(500).json("ERROR fetching usage report")
+  }
+})
 
 app.listen(process.env.PORT, () => {
   console.log(`Your server is running on PORT ${process.env.PORT}`);

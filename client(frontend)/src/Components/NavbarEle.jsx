@@ -97,6 +97,8 @@ const quantity=cart.reduce((sum,curr)=>{
                 <Button
                   variant="outline-secondary"
                   className="rounded-pill px-4 py-2 fw-semibold login-btn"
+                   as={Link}
+                  to="/admin"
                 >
                   Admin
                 </Button>

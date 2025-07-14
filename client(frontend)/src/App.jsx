@@ -11,6 +11,9 @@ import Contact from "./pages/Contact";
 import Footer from "./Components/Footer";
 import Login from "./pages/login";
 import VehicleDetail from "./pages/VehicleDetail";
+import Admin from "./pages/Admin";
+import SalesReport from "./pages/SalesReport";
+import UsageReport from "./pages/UsageReport";
 function App() {
   return (
     <Router>
@@ -27,6 +30,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cars/:id" element={<VehicleDetail />} />
+          <Route path="/admin" element={<Admin />}></Route>
+           <Route path="/usage" element={<UsageReport />}></Route> 
+           <Route path="/sales" element={<SalesReport />}></Route>
+
         </Routes>
       </div>
       <Footer />

@@ -169,7 +169,6 @@ LEFT JOIN cart_item_customizations cic ON ci.id = cic.cart_item_id
 LEFT JOIN customization_options co ON cic.customization_option_id = co.id
 WHERE ci.cart_id = $1
 GROUP BY ci.id, v.id
-
       `,
       [cart_id]
     );
@@ -332,6 +331,27 @@ async function insertCartItemCustomization(
   }
 }
 
+async function getSales() {
+  try {
+    const result=await pool.query(`SELECT * FROM order_items`)
+    return result.rows
+  } catch (error) {
+    console.error(error);
+    throw error
+  }
+}
+
+
+async function getUsage() {
+  try {
+    const result=await pool.query(`SELECT * FROM users`)
+    return result.rows
+  } catch (error) {
+    console.error(error);
+    throw error
+  }
+}
+
 module.exports = {
   registerUser,
   getUserByEmail,
@@ -349,4 +369,6 @@ module.exports = {
   getReview,
   getCustomizationOptions,
   insertCartItemCustomization,
+  getSales,
+  getUsage
 };
