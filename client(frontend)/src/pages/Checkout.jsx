@@ -20,12 +20,14 @@ function Checkout() {
     e.preventDefault();
 
     try {
+
+      
       const cartItems = cart.map((item) => ({
         vehicle_id: item.vehicle_id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
-        customizations: item.customization_ids || [],
+        customization_ids: item.customization_ids || [],
         customization_cost: item.customization_cost || 0,
       }));
 

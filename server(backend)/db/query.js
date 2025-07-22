@@ -242,7 +242,7 @@ async function addOrder({
         name,
         price,
         quantity,
-        customization_ids = [],
+        customization_ids,
         customization_cost,
       } = item;
 
@@ -258,12 +258,10 @@ async function addOrder({
 
       const orderItemId = orderItemResult.rows[0].id;
 
-      console.log("item",item);
-
       for (const customizationId of customization_ids) {
         await pool.query(
-          `INSERT INTO selected_customizations (
-            order_item_id, customization_option_id
+          `INSERT INTO selected_customizations(
+            order_item_id ,customization_option_id
           ) VALUES ($1, $2)`,
           [orderItemId, customizationId]
         );
